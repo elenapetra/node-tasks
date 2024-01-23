@@ -1,19 +1,13 @@
-import { validateInput, shortenPublicHoliday } from "./helpers";
-import axios from "axios";
-jest.mock("axios");
+import { validateInput, shortenPublicHoliday } from "../../helpers";
 
-describe("public-holidays.service", () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  describe("validateInput function", () => {
-    test("valid country and year", () => {
+describe("Unit tests for helpers.ts file", () => {
+  describe("Validate input function", () => {
+    it("valid country and year", () => {
       const input = { year: new Date().getFullYear(), country: "FR" };
       expect(validateInput(input)).toBe(true);
     });
 
-    test("invalid country", () => {
+    it("invalid country", () => {
       const input = {
         year: new Date().getFullYear(),
         country: "US",
@@ -23,7 +17,7 @@ describe("public-holidays.service", () => {
       );
     });
 
-    test("invalid year", () => {
+    it("invalid year", () => {
       const input = { year: new Date().getFullYear() - 1, country: "FR" };
       expect(() => validateInput(input)).toThrow(
         "Year provided not the current"
@@ -31,8 +25,8 @@ describe("public-holidays.service", () => {
     });
   });
 
-  describe("shortenPublicHoliday function", () => {
-    test("shorten public holiday", () => {
+  describe("Shorten public holiday function", () => {
+    it("shorten public holiday", () => {
       const holiday = {
         name: "New Year",
         localName: "New Year Local",
@@ -40,7 +34,7 @@ describe("public-holidays.service", () => {
         countryCode: "FR",
         fixed: true,
         global: true,
-        counties: ["County A", "County B"],
+        counties: ["France", "Italy"],
         launchYear: 2000,
         types: ["Type A", "Type B"],
       };

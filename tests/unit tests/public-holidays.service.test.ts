@@ -1,19 +1,14 @@
 import axios from "axios";
+
 import {
   getListOfPublicHolidays,
   checkIfTodayIsPublicHoliday,
   getNextPublicHolidays,
-} from "./public-holidays.service";
-import { validateInput, shortenPublicHoliday } from "./helpers";
-
+} from "../../public-holidays.service";
 jest.mock("axios");
 
-describe("public-holidays.service", () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  describe("getListOfPublicHolidays", () => {
+describe("Unit tests for public-holidays.service.ts file ", () => {
+  describe("Get a list of public holidays", () => {
     it("should return a list of shortened public holidays", async () => {
       const mockData = [
         { name: "Holiday 1", localName: "Local Holiday 1", date: "2024-01-01" },
@@ -44,7 +39,7 @@ describe("public-holidays.service", () => {
     });
   });
 
-  describe("checkIfTodayIsPublicHoliday", () => {
+  describe("Check if today is a public holiday", () => {
     it("should return true if today is a public holiday", async () => {
       const todayDate = new Date().toISOString().split("T")[0];
       const mockData = [{ date: todayDate, name: "Today's Holiday" }];
@@ -58,13 +53,9 @@ describe("public-holidays.service", () => {
       expect(axios.get).toHaveBeenCalledWith(
         `https://date.nager.at/api/v3/IsTodayPublicHoliday/FR`
       );
-
-      console.log("Mocked API response:", mockData);
-      console.log("Actual result:", result);
     });
 
     it("should return false if today is not a public holiday", async () => {
-      const todayDate = new Date().toISOString().split("T")[0];
       const mockData = [];
 
       jest
@@ -76,14 +67,11 @@ describe("public-holidays.service", () => {
       expect(axios.get).toHaveBeenCalledWith(
         `https://date.nager.at/api/v3/IsTodayPublicHoliday/FR`
       );
-
-      console.log("Mocked API response:", mockData);
-      console.log("Actual result:", result);
     });
   });
 
-  describe("getNextPublicHolidays", () => {
-    it("should return the next public holidays", async () => {
+  describe("Get a list of next public holidays", () => {
+    it("should return a list of next public holidays", async () => {
       const todayDate = new Date().toISOString().split("T")[0];
       const mockData = [
         { date: todayDate, name: "Today's Holiday" },
@@ -113,5 +101,9 @@ describe("public-holidays.service", () => {
 
       expect(result).toEqual([]);
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });
