@@ -25,10 +25,10 @@ export const checkIfTodayIsPublicHoliday = async (country: string) => {
   validateInput({ country });
 
   try {
-    const { status } = await axios.get<PublicHoliday[]>(
+    const response = await axios.get<PublicHoliday[]>(
       `${PUBLIC_HOLIDAYS_API_URL}/IsTodayPublicHoliday/${country}`
     );
-    return status === 200;
+    return response.status === 200 && response.data.length > 0;
   } catch (error) {
     return false;
   }
