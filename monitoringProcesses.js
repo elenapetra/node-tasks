@@ -14,13 +14,12 @@ const runCommand = (command) => {
 };
 
 const parseOutput = (output) => {
+  let [cpu, mem, processName] = output.split(/\s+/);
+
   if (process.platform === "win32") {
-    const [processName, cpu, mem] = output.split(/\s+/);
-    return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
-  } else {
-    const [cpu, mem, processName] = output.split(/\s+/);
-    return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
+    [processName, cpu, mem] = output.split(/\s+/);
   }
+  return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
 };
 
 const monitorAndLog = () => {
