@@ -13,14 +13,23 @@ const runCommand = (command) => {
   }
 };
 
+const parseOutput = (output) => {
+  if (process.platform === "win32") {
+    const [processName, cpu, mem] = output.split(/\s+/);
+    return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
+  } else {
+    const [cpu, mem, processName] = output.split(/\s+/);
+    return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
+  }
+};
+
 const monitorAndLog = () => {
   const unixCommand = "ps -A -o %cpu,%mem,comm | sort -nr | head -n 1";
   const windowsCommand =
     "powershell \"Get-Process | Sort-Object CPU -Descending | Select-Object -Property Name, CPU, WorkingSet -First 1 | ForEach-Object { $_.Name + ' ' + $_.CPU + ' ' + $_.WorkingSet }\"";
   const command = process.platform === "win32" ? windowsCommand : unixCommand;
   const output = runCommand(command);
-  const [cpu, mem, processName] = output.split(/\s+/);
-  return `Process: ${processName} | CPU: ${cpu} | Memory: ${mem}`;
+  return parseOutput(output);
 };
 
 const displayInformation = () => {
@@ -40,4 +49,4 @@ const writeToFile = () => {
 displayInformation();
 setInterval(displayInformation, 100);
 writeToFile();
-setInterval(writeToFile, 60*1000);
+setInterval(writeToFile, 60 * 1000);
