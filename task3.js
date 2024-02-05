@@ -7,20 +7,17 @@ const txtFilePath = "./csvdirectory/output.txt";
 const stream = fs.createReadStream(csvFilePath, { encoding: "utf8" });
 const writeStream = fs.createWriteStream(txtFilePath);
 
-let isFirstLine = true;
-
 csvtojson({
   noheader: true,
   output: "line",
 })
   .fromStream(stream)
   .subscribe(
-    (csvLine) => {
-      if (isFirstLine) {
-        isFirstLine = false;
+    (csvLine, lineNumber) => {
+      if (lineNumber === 0) {
         return;
       }
-      const [book, author, amount, price] = csvLine.split(",");
+      const [book, author, _, price] = csvLine.split(",");
       const txtLine = `{"book":"${book}","author":"${author}","price":${price}}\n`;
       writeStream.write(txtLine);
     },

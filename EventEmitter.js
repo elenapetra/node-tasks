@@ -37,7 +37,7 @@ class EventEmitter {
   }
 
   listenerCount(eventName) {
-    return this.listeners[eventName] ? this.listeners[eventName].length : 0;
+    return this.listeners[eventName]?.length ?? 0;
   }
 
   rawListeners(eventName) {
