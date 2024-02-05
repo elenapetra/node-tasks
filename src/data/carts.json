@@ -1,0 +1,25 @@
+[
+  {
+    "id": "eb5a26af-6e4c-4f31-a9b1-3450d42ac66c",
+    "userId": "2",
+    "isDeleted": false,
+    "items": [
+      {
+        "product": {
+          "id": "891389f0-4312-42d6-a650-6fda0959c734",
+          "title": "Book",
+          "description": "Interesting book",
+          "price": 200
+        },
+        "count": 7
+      }
+    ]
+  },
+
+  {
+    "id": "44379bba-fac0-40da-b42e-64bdee5545a1",
+    "userId": "1",
+    "isDeleted": false,
+    "items": []
+  }
+]

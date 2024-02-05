@@ -1,0 +1,14 @@
+[
+  {
+    "id": "51422fcd-0366-4186-ad5b-c23059b6f64f",
+    "title": "Book",
+    "description": "A very interesting book",
+    "price": 100
+  },
+  {
+    "id": "11422fcd-0366-4186-ad5b-c23059b6f64f",
+    "title": "Book1",
+    "description": "A very interesting book1",
+    "price": 10
+  }
+]
