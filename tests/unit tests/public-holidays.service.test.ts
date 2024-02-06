@@ -13,6 +13,7 @@ import {
 } from "../../public-holidays.service";
 
 jest.mock("axios");
+const PUBLIC_HOLIDAYS_API_URL = "https://date.nager.at/api/v3/";
 
 describe("Unit tests for public-holidays.service.ts file ", () => {
   describe("Get a list of public holidays", () => {
@@ -24,7 +25,7 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
       const result = await getListOfPublicHolidays(mockYear, mockCountry);
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://date.nager.at/api/v3/PublicHolidays/${mockYear}/${mockCountry}`
+        `${PUBLIC_HOLIDAYS_API_URL}PublicHolidays/${mockYear}/${mockCountry}`
       );
       expect(result).toEqual(mockHolidayListShort);
     });
@@ -42,7 +43,7 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
 
   describe("Check if today is a public holiday", () => {
     it("should return true if today is a public holiday", async () => {
-      const todayDate = new Date().toISOString().split("T")[0];
+      const todayDate = new Date().toDateString().split("T")[0];
       const mockIsPublicHoliday = [
         { date: todayDate, name: "Today's Holiday" },
       ];
@@ -54,7 +55,7 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
       const result = await checkIfTodayIsPublicHoliday(mockCountry);
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://date.nager.at/api/v3/IsTodayPublicHoliday/${mockCountry}`
+        `${PUBLIC_HOLIDAYS_API_URL}IsTodayPublicHoliday/${mockCountry}`
       );
 
       expect(result).toBe(true);
@@ -70,7 +71,20 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
       const result = await checkIfTodayIsPublicHoliday(mockCountry);
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://date.nager.at/api/v3/IsTodayPublicHoliday/${mockCountry}`
+        `${PUBLIC_HOLIDAYS_API_URL}IsTodayPublicHoliday/${mockCountry}`
+      );
+      expect(result).toBe(false);
+    });
+
+    it("should return false on error", async () => {
+      const mockError = new Error("Failed to fetch data");
+
+      jest.spyOn(axios, "get").mockRejectedValueOnce(mockError);
+
+      const result = await checkIfTodayIsPublicHoliday(mockCountry);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `${PUBLIC_HOLIDAYS_API_URL}IsTodayPublicHoliday/${mockCountry}`
       );
       expect(result).toBe(false);
     });
@@ -79,9 +93,9 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
   describe("Get a list of next public holidays", () => {
     it("should return a list of next public holidays", async () => {
       const expectedHoliday = {
-        date: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
-        localName: expect.any(String),
-        name: expect.any(String),
+        date: mockHolidayListShort[0].date,
+        localName: mockHolidayListShort[0].localName,
+        name: mockHolidayListShort[0].name,
       };
 
       jest.spyOn(axios, "get").mockResolvedValueOnce({ data: expectedHoliday });
@@ -89,7 +103,7 @@ describe("Unit tests for public-holidays.service.ts file ", () => {
       const result = await getNextPublicHolidays(mockCountry);
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://date.nager.at/api/v3/NextPublicHolidays/${mockCountry}`
+        `${PUBLIC_HOLIDAYS_API_URL}NextPublicHolidays/${mockCountry}`
       );
 
       const filteredResult = result.filter(

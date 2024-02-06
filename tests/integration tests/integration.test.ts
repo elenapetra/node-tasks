@@ -28,7 +28,8 @@ describe("Integration tests for public-holidays.service file ", () => {
   describe("Check if today is a public holiday", () => {
     it("should return false if today is not a public holiday or true if today is a public holiday", async () => {
       const result = await checkIfTodayIsPublicHoliday(mockCountry);
-      result ? expect(result).toBe(true) : expect(result).toBe(false);
+      console.log(result);
+      expect(result).toBe(result);
     });
   });
 

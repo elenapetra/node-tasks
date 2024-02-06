@@ -18,9 +18,12 @@ describe("Unit tests for helpers.ts file", () => {
         year: new Date().getFullYear(),
         country: "US",
       };
-      expect(() => validateInput(input)).toThrow(
-        "Country provided is not supported"
-      );
+      try {
+        validateInput(input);
+        fail();
+      } catch (err) {
+        expect(err.message).toContain("Country provided is not supported");
+      }
     });
 
     it("invalid year", () => {
