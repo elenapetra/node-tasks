@@ -14,16 +14,23 @@ export const getCartService = async (
 
 export const updateCartService = async (
   userId: string,
-  updatedCart: Partial<CartEntity>
+  updatedItems: CartEntity["items"]
 ): Promise<void> => {
-  return updateCart(userId, updatedCart);
+  try {
+    const existingCart = await getCart(userId);
+    if (!existingCart) {
+      console.error("Cart not found for user:", userId);
+      return;
+    }
+    existingCart.items = updatedItems;
+    await updateCart(userId, { items: existingCart.items });
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    throw new Error("Internal Server Error");
+  }
 };
 
 export const deleteCartService = async (userId: string): Promise<void> => {
   const deletedCart = await deleteCart(userId);
   return deletedCart;
-};
-
-export const checkoutCartService = (userId: string): void => {
-  return;
 };

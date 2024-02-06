@@ -3,9 +3,10 @@ import {
   getCartService,
   updateCartService,
   deleteCartService,
-  checkoutCartService,
 } from "../services/cart.service";
 import { CustomRequest } from "../middleware/auth.middleware";
+import { getProductById } from "../repositories/product.repository";
+import Joi from "joi";
 
 export const getUserCart = async (
   req: CustomRequest,
@@ -75,32 +76,104 @@ export const deleteCart = async (
     console.error("Error deleting cart:", error);
   }
 };
-// export const updateCart = async (
-//   req: Request,
-//   res: Response
-// ): Promise<void> => {
-//   const userId = req.header("x-user-id");
-//   const { productId, count } = req.body;
 
-//   if (!userId) {
-//     res.status(401).json({
-//       error: "'Unauthorized: x-user-id header missing.(From order controller)'",
-//     });
-//     return;
-//   }
-//   if (!productId || typeof count !== "number") {
-//     res.status(400).json({
-//       error: "Invalid request body. productId and count are required.",
-//     });
-//     return;
-//   }
-//   try {
-//     const updatedCart = { productId, count };
-//     await updateCartService(userId, updatedCart);
-//     res.status(200).json({ message: "Cart updated successfully." });
-//   } catch (error) {
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
+export const updateCart = async (
+  req: CustomRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.userId;
 
-export const checkoutCart = (req: Request, res: Response): void => {};
+    const orderSchema = Joi.object({
+      productId: Joi.string().required(),
+      count: Joi.number().integer().min(0).required(),
+    });
+    const { error, value } = orderSchema.validate(req.body);
+
+    if (error) {
+      res.status(400).json({
+        data: null,
+        error: {
+          message: "Validation Error",
+          details: error.details.map((detail) => detail.message),
+        },
+      });
+      return;
+    }
+
+    if (!userId) {
+      res.status(401).json({
+        data: null,
+        error: { message: "You must be an authorized user" },
+      });
+      return;
+    }
+
+    const userCart = await getCartService(userId);
+    const { productId, count } = value;
+
+    if (!userCart) {
+      res.status(404).json({
+        data: null,
+        error: {
+          message: "Cart was not found",
+        },
+      });
+      return;
+    }
+
+    let updatedItems = [];
+    if (count === 0) {
+      updatedItems = userCart.items.filter(
+        (item) => item.product.id !== productId
+      );
+    } else {
+      updatedItems = userCart.items.map((item) => {
+        if (item.product.id === productId) {
+          return { ...item, count };
+        } else {
+          return item;
+        }
+      });
+    }
+
+    if (!userCart.items.some((item) => item.product.id === productId)) {
+      const productDetails = await getProductById(productId);
+      if (!productDetails) {
+        res.status(400).json({
+          data: null,
+          error: { message: "Product details not found" },
+        });
+        return;
+      }
+      updatedItems.push({ product: productDetails, count });
+    }
+
+    updatedItems = updatedItems.filter((item) => item.count > 0);
+    await updateCartService(userId, updatedItems);
+    const currentProduct = userCart.items.find((item) => {
+      return item.product.id === productId;
+    });
+    if (currentProduct) {
+      const responseData = {
+        cart: {
+          id: userCart.id,
+          items: currentProduct,
+          total: count * currentProduct?.product.price,
+        },
+      };
+
+      const responseBody = {
+        data: { responseData },
+        error: null,
+      };
+      res.status(200).json(responseBody);
+    }
+  } catch (error) {
+    console.error("Error updating cart:", error);
+    res.status(500).json({
+      data: null,
+      error: { message: "Internal Server Error" },
+    });
+  }
+};

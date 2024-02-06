@@ -1,29 +1,17 @@
-import { CartItemEntity, ORDER_STATUS, OrderEntity } from "../utils/types";
-const uuid = require("uuid");
+import { saveOrder } from "../repositories/order.repository";
+import { OrderEntity } from "../utils/types";
+import { checkoutCart } from "../repositories/cart.repository";
 
-const newId = uuid.v4();
-const orders: OrderEntity[] = [];
-
-export const getUserOrdersService = (userId: string): OrderEntity[] => {
-  return orders.filter((order) => order.userId === userId);
+export const checkoutOrderService = async (userId: string) => {
+  const userCart = await checkoutCart(userId);
+  return userCart;
 };
 
-export const createOrderService = (
-  userId: string,
-  cartId: string,
-  items: CartItemEntity[]
-): OrderEntity => {
-  const order: OrderEntity = {
-    id: newId,
-    userId: userId,
-    cartId: cartId,
-    items: items,
-    payment: { type: "paypal" },
-    delivery: { type: "post", address: {} },
-    comments: "",
-    status: "created" as ORDER_STATUS,
-    total: 2,
-  };
-  orders.push(order);
-  return order;
+export const saveOrderService = async (order: OrderEntity) => {
+  try {
+    await saveOrder(order);
+  } catch (error) {
+    console.error("Error saving order:", error);
+    throw new Error("Error saving order");
+  }
 };

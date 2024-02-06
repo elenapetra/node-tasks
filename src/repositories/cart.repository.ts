@@ -41,13 +41,13 @@ export const getCart = async (
 
 export const updateCart = async (
   userId: string,
-  updatedCart: Partial<CartEntity>
+  updatedCart: { items: CartEntity["items"] }
 ): Promise<void> => {
   const carts = await getAllCarts();
 
   const updatedCartList = carts.map((cart: CartEntity) => {
     if (cart.userId === userId && !cart.isDeleted) {
-      return { ...cart, updatedCart };
+      return { ...cart, items: updatedCart.items };
     }
     return cart;
   });
@@ -73,4 +73,10 @@ export const deleteCart = async (userId: string): Promise<void> => {
   );
 };
 
-export const checkoutCart = async (userId: string): Promise<void> => {};
+export const checkoutCart = async (
+  userId: string
+): Promise<CartEntity | undefined> => {
+  const carts = await getAllCarts();
+  const userCart = carts.find((cart) => cart.userId === userId);
+  return userCart;
+};

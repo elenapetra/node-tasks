@@ -53,7 +53,7 @@ const updateCart = (userId, updatedCart) => __awaiter(void 0, void 0, void 0, fu
     const carts = yield (0, exports.getAllCarts)();
     const updatedCartList = carts.map((cart) => {
         if (cart.userId === userId && !cart.isDeleted) {
-            return Object.assign(Object.assign({}, cart), { updatedCart });
+            return Object.assign(Object.assign({}, cart), { items: updatedCart.items });
         }
         return cart;
     });
@@ -71,5 +71,9 @@ const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     yield promises_1.default.writeFile(dataFilePath, JSON.stringify(updatedCartList, null, 2), "utf-8");
 });
 exports.deleteCart = deleteCart;
-const checkoutCart = (userId) => __awaiter(void 0, void 0, void 0, function* () { });
+const checkoutCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const carts = yield (0, exports.getAllCarts)();
+    const userCart = carts.find((cart) => cart.userId === userId);
+    return userCart;
+});
 exports.checkoutCart = checkoutCart;

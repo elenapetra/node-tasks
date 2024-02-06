@@ -9,15 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkoutCartService = exports.deleteCartService = exports.updateCartService = exports.getCartService = void 0;
+exports.deleteCartService = exports.updateCartService = exports.getCartService = void 0;
 const cart_repository_1 = require("../repositories/cart.repository");
 const getCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const userCart = yield (0, cart_repository_1.getCart)(userId);
     return userCart;
 });
 exports.getCartService = getCartService;
-const updateCartService = (userId, updatedCart) => __awaiter(void 0, void 0, void 0, function* () {
-    return (0, cart_repository_1.updateCart)(userId, updatedCart);
+const updateCartService = (userId, updatedItems) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingCart = yield (0, cart_repository_1.getCart)(userId);
+        if (!existingCart) {
+            console.error("Cart not found for user:", userId);
+            return;
+        }
+        existingCart.items = updatedItems;
+        yield (0, cart_repository_1.updateCart)(userId, { items: existingCart.items });
+    }
+    catch (error) {
+        console.error("Error updating cart:", error);
+        throw new Error("Internal Server Error");
+    }
 });
 exports.updateCartService = updateCartService;
 const deleteCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,7 +37,3 @@ const deleteCartService = (userId) => __awaiter(void 0, void 0, void 0, function
     return deletedCart;
 });
 exports.deleteCartService = deleteCartService;
-const checkoutCartService = (userId) => {
-    return;
-};
-exports.checkoutCartService = checkoutCartService;

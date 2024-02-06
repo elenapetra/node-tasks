@@ -12,14 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrder = exports.deleteUserOrder = exports.createOrder = exports.getUserOrder = exports.getAllOrders = void 0;
+exports.saveOrder = exports.getUserOrder = exports.getAllOrders = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
-const path_1 = __importDefault(require("path"));
-const dataFilePath = path_1.default.join(__dirname, "data", "orders.json");
+const dataFilePath = "src/data/orders.json";
 const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield promises_1.default.readFile(dataFilePath, "utf-8");
-        return JSON.parse(data) || [];
+        return JSON.parse(data);
     }
     catch (error) {
         console.error("Error reading products data:", error);
@@ -33,26 +32,9 @@ const getUserOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () 
     return userOrders;
 });
 exports.getUserOrder = getUserOrder;
-const createOrder = (item) => __awaiter(void 0, void 0, void 0, function* () {
+const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield (0, exports.getAllOrders)();
-    orders.push(item);
+    orders.push(order);
     yield promises_1.default.writeFile(dataFilePath, JSON.stringify(orders, null, 2), "utf-8");
 });
-exports.createOrder = createOrder;
-const deleteUserOrder = (orderId) => __awaiter(void 0, void 0, void 0, function* () {
-    const orders = yield (0, exports.getAllOrders)();
-    const orderIndex = orders.findIndex((order) => order.id === orderId);
-    if (orderIndex !== -1) {
-        orders.slice(orderIndex, 1);
-        yield promises_1.default.writeFile(dataFilePath, JSON.stringify(orders, null, 2), "utf-8");
-    }
-});
-exports.deleteUserOrder = deleteUserOrder;
-const updateOrder = (orderId) => __awaiter(void 0, void 0, void 0, function* () {
-    const orders = yield (0, exports.getAllOrders)();
-    const orderToUpdate = orders.find((order) => order.id === orderId);
-    if (!orderToUpdate) {
-        throw new Error(`Order with ID ${orderId} not found.`);
-    }
-});
-exports.updateOrder = updateOrder;
+exports.saveOrder = saveOrder;
