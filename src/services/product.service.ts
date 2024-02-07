@@ -5,14 +5,23 @@ import {
 } from "../repositories/product.repository";
 
 export const getAllProductsService = async (): Promise<ProductEntity[]> => {
-  const products = await getAllProducts();
-  return products;
+  try {
+    const products = await getAllProducts();
+    return products;
+  } catch (error) {
+    console.error("Error getting products:", error);
+    return [];
+  }
 };
 
 export const getProductByIdService = async (
   productId: string
 ): Promise<ProductEntity | undefined> => {
-  const product = await getProductById(productId);
-
-  return product;
+  try {
+    const product = await getProductById(productId);
+    return product;
+  } catch (error) {
+    console.error("Error getting product:", error);
+    return;
+  }
 };

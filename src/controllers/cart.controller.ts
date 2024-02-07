@@ -142,7 +142,7 @@ export const updateCart = async (
       if (!productDetails) {
         res.status(400).json({
           data: null,
-          error: { message: "Product details not found" },
+          error: { message: "Products are not valid" },
         });
         return;
       }
@@ -155,16 +155,16 @@ export const updateCart = async (
       return item.product.id === productId;
     });
     if (currentProduct) {
-      const responseData = {
+      const data = {
         cart: {
           id: userCart.id,
-          items: currentProduct,
-          total: count * currentProduct?.product.price,
+          items: [currentProduct],
         },
+        total: count * currentProduct?.product.price,
       };
 
       const responseBody = {
-        data: { responseData },
+        data,
         error: null,
       };
       res.status(200).json(responseBody);

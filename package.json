@@ -6,8 +6,6 @@
   "scripts": {
     "build": "npx tsc",
     "start": "nodemon src/index.ts",
-    "stop": "npm run stop-server",
-    "stop-server": "pkill -f 'node dist/index.js' || true",
     "prestart": "npm run build",
     "predev": "npm run build"
   },

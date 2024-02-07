@@ -13,16 +13,26 @@ exports.getProductById = exports.getAllProducts = void 0;
 const product_service_1 = require("../services/product.service");
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const products = yield (0, product_service_1.getAllProductsService)();
-    res.json(products);
+    const responseBody = {
+        data: Object.assign({}, products),
+        error: null,
+    };
+    res.json(responseBody);
 });
 exports.getAllProducts = getAllProducts;
 const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = req.params.productId;
     const product = yield (0, product_service_1.getProductByIdService)(productId);
     if (!product) {
-        res.status(404).json({ error: "Product not found." });
+        res
+            .status(404)
+            .json({ data: null, error: { message: "No product with such id" } });
         return;
     }
-    res.json(product);
+    const responseBody = {
+        data: Object.assign({}, product),
+        error: null,
+    };
+    res.json(responseBody);
 });
 exports.getProductById = getProductById;

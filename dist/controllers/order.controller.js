@@ -26,8 +26,11 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
         else {
             const userCart = yield (0, order_service_1.checkoutOrderService)(userId);
             if (!userCart) {
+                console.error("User cart was not found");
+            }
+            else if (userCart.items.length === 0) {
                 res
-                    .status(401)
+                    .status(400)
                     .json({ data: null, error: { message: "Cart is empty" } });
             }
             else {

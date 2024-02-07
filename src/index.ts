@@ -13,6 +13,7 @@ const userRouter = express.Router();
 const productRouter = express.Router();
 
 userRouter.use(authMiddleware);
+productRouter.use(authMiddleware);
 app.use(bodyParser.json());
 
 userRouter.get("/cart", CartController.getUserCart);

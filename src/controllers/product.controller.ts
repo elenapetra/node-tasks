@@ -9,7 +9,11 @@ export const getAllProducts = async (
   res: Response
 ): Promise<void> => {
   const products = await getAllProductsService();
-  res.json(products);
+  const responseBody = {
+    data: { ...products },
+    error: null,
+  };
+  res.json(responseBody);
 };
 
 export const getProductById = async (
@@ -19,8 +23,14 @@ export const getProductById = async (
   const productId = req.params.productId;
   const product = await getProductByIdService(productId);
   if (!product) {
-    res.status(404).json({ error: "Product not found." });
+    res
+      .status(404)
+      .json({ data: null, error: { message: "No product with such id" } });
     return;
   }
-  res.json(product);
+  const responseBody = {
+    data: { ...product },
+    error: null,
+  };
+  res.json(responseBody);
 };

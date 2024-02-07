@@ -12,12 +12,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductByIdService = exports.getAllProductsService = void 0;
 const product_repository_1 = require("../repositories/product.repository");
 const getAllProductsService = () => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield (0, product_repository_1.getAllProducts)();
-    return products;
+    try {
+        const products = yield (0, product_repository_1.getAllProducts)();
+        return products;
+    }
+    catch (error) {
+        console.error("Error getting products:", error);
+        return [];
+    }
 });
 exports.getAllProductsService = getAllProductsService;
 const getProductByIdService = (productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const product = yield (0, product_repository_1.getProductById)(productId);
-    return product;
+    try {
+        const product = yield (0, product_repository_1.getProductById)(productId);
+        return product;
+    }
+    catch (error) {
+        console.error("Error getting product:", error);
+        return;
+    }
 });
 exports.getProductByIdService = getProductByIdService;

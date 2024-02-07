@@ -44,7 +44,6 @@ export const updateCart = async (
   updatedCart: { items: CartEntity["items"] }
 ): Promise<void> => {
   const carts = await getAllCarts();
-
   const updatedCartList = carts.map((cart: CartEntity) => {
     if (cart.userId === userId && !cart.isDeleted) {
       return { ...cart, items: updatedCart.items };
@@ -62,7 +61,7 @@ export const deleteCart = async (userId: string): Promise<void> => {
   const carts = await getAllCarts();
   const updatedCartList = carts.map((cart: CartEntity) => {
     if (cart.userId === userId && !cart.isDeleted) {
-      return { ...cart, isDeleted: true };
+      return { ...cart, items: [], isDeleted: true };
     }
     return cart;
   });
@@ -77,6 +76,8 @@ export const checkoutCart = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   const carts = await getAllCarts();
-  const userCart = carts.find((cart) => cart.userId === userId);
+  const userCart = carts.find(
+    (cart) => cart.userId === userId && !cart.isDeleted
+  );
   return userCart;
 };

@@ -34,6 +34,7 @@ const port = 8000;
 const userRouter = express.Router();
 const productRouter = express.Router();
 userRouter.use(auth_middleware_1.authMiddleware);
+productRouter.use(auth_middleware_1.authMiddleware);
 app.use(bodyParser.json());
 userRouter.get("/cart", CartController.getUserCart);
 userRouter.put("/cart", CartController.updateCart);

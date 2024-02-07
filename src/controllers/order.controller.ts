@@ -4,7 +4,7 @@ import {
   saveOrderService,
 } from "../services/order.service";
 import { CustomRequest } from "../middleware/auth.middleware";
-import { OrderEntity, ORDER_STATUS } from "../utils/types";
+import { ORDER_STATUS } from "../utils/types";
 const uuid = require("uuid");
 
 export const createUserOrders = async (
@@ -23,8 +23,10 @@ export const createUserOrders = async (
     } else {
       const userCart = await checkoutOrderService(userId);
       if (!userCart) {
+        console.error("User cart was not found");
+      } else if (userCart.items.length === 0) {
         res
-          .status(401)
+          .status(400)
           .json({ data: null, error: { message: "Cart is empty" } });
       } else {
         const userOrder = {

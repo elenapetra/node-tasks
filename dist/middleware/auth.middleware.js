@@ -24,21 +24,25 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
                     req.userId = userId;
                 }
                 else {
-                    return res
-                        .status(403)
-                        .json({ error: "Forbidden", message: "User not found." });
+                    return res.status(401).json({
+                        data: null,
+                        error: { message: "User is not authorized." },
+                    });
                 }
             }
         }
         catch (error) {
             console.error("Error fetching user:", error);
-            return res.status(500).json({ error: "Internal Server Error" });
+            return res
+                .status(500)
+                .json({ data: null, error: { message: "Internal Server Error" } });
         }
     }
     else {
-        return res
-            .status(401)
-            .json({ error: "Unauthorized", message: "x-user-id header missing." });
+        return res.status(403).json({
+            data: null,
+            error: { message: "You must be an authorized user." },
+        });
     }
     next();
 });

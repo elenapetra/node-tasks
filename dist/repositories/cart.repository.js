@@ -64,7 +64,7 @@ const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const carts = yield (0, exports.getAllCarts)();
     const updatedCartList = carts.map((cart) => {
         if (cart.userId === userId && !cart.isDeleted) {
-            return Object.assign(Object.assign({}, cart), { isDeleted: true });
+            return Object.assign(Object.assign({}, cart), { items: [], isDeleted: true });
         }
         return cart;
     });
@@ -73,7 +73,7 @@ const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 exports.deleteCart = deleteCart;
 const checkoutCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const carts = yield (0, exports.getAllCarts)();
-    const userCart = carts.find((cart) => cart.userId === userId);
+    const userCart = carts.find((cart) => cart.userId === userId && !cart.isDeleted);
     return userCart;
 });
 exports.checkoutCart = checkoutCart;

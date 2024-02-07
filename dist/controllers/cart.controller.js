@@ -135,7 +135,7 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (!productDetails) {
                 res.status(400).json({
                     data: null,
-                    error: { message: "Product details not found" },
+                    error: { message: "Products are not valid" },
                 });
                 return;
             }
@@ -147,15 +147,15 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return item.product.id === productId;
         });
         if (currentProduct) {
-            const responseData = {
+            const data = {
                 cart: {
                     id: userCart.id,
-                    items: currentProduct,
-                    total: count * (currentProduct === null || currentProduct === void 0 ? void 0 : currentProduct.product.price),
+                    items: [currentProduct],
                 },
+                total: count * (currentProduct === null || currentProduct === void 0 ? void 0 : currentProduct.product.price),
             };
             const responseBody = {
-                data: { responseData },
+                data,
                 error: null,
             };
             res.status(200).json(responseBody);
