@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-
 import { UserEntity } from "../utils/types";
 import { getUserById } from "../repositories/user.repository";
 
@@ -21,7 +20,7 @@ export const authMiddleware = async (
         req.userId = userId;
       } else {
         const user = await getUserById(userId);
-        if (user && user.id === userId) {
+        if (user && user._id.toString() === userId) {
           req.userId = userId;
         } else {
           return res.status(401).json({

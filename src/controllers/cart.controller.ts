@@ -20,10 +20,10 @@ export const getUserCart = async (
         const responseData = {
           data: {
             cart: {
-              id: userCart.id,
+              id: userCart._id,
               items: userCart.items.map((item) => ({
                 product: {
-                  id: item.product.id,
+                  id: item.product._id,
                   title: item.product.title,
                   description: item.product.description,
                   price: item.product.price,
@@ -125,11 +125,11 @@ export const updateCart = async (
     let updatedItems = [];
     if (count === 0) {
       updatedItems = userCart.items.filter(
-        (item) => item.product.id !== productId
+        (item) => item.product._id !== productId
       );
     } else {
       updatedItems = userCart.items.map((item) => {
-        if (item.product.id === productId) {
+        if (item.product._id === productId) {
           return { ...item, count };
         } else {
           return item;
@@ -137,7 +137,7 @@ export const updateCart = async (
       });
     }
 
-    if (!userCart.items.some((item) => item.product.id === productId)) {
+    if (!userCart.items.some((item) => item.product._id === productId)) {
       const productDetails = await getProductById(productId);
       if (!productDetails) {
         res.status(400).json({
@@ -152,12 +152,12 @@ export const updateCart = async (
     updatedItems = updatedItems.filter((item) => item.count > 0);
     await updateCartService(userId, updatedItems);
     const currentProduct = userCart.items.find((item) => {
-      return item.product.id === productId;
+      return item.product._id === productId;
     });
     if (currentProduct) {
       const data = {
         cart: {
-          id: userCart.id,
+          id: userCart._id,
           items: [currentProduct],
         },
         total: count * currentProduct?.product.price,

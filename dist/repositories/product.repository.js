@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductById = exports.getAllProducts = void 0;
-const product_model_1 = __importDefault(require("../models/schemas/product.model"));
+const ProductModel = require("../models/schemas/product.model");
 const dataFilePath = "src/data/products.json";
 // export const getAllProducts = async (): Promise<ProductEntity[]> => {
 //   try {
@@ -35,7 +32,7 @@ const dataFilePath = "src/data/products.json";
 // };
 const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return yield product_model_1.default.find().exec();
+        return yield ProductModel.find().exec();
     }
     catch (error) {
         console.error("Error fetching products from MongoDB:", error);
@@ -45,7 +42,7 @@ const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllProducts = getAllProducts;
 const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield product_model_1.default.findById(productId).exec();
+        const product = yield ProductModel.findById(productId).exec();
         return product ? product.toJSON() : undefined;
     }
     catch (error) {

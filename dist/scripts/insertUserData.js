@@ -12,13 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const user_model_1 = __importDefault(require("../models/schemas/user.model"));
+const user_model_1 = require("../models/schemas/user.model");
 const db_1 = __importDefault(require("../db"));
 const usersData = require("../data/users.json");
 const insertUsersData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const formattedData = usersData.map(() => ({}));
-        yield user_model_1.default.insertMany(usersData);
+        yield user_model_1.UserModel.insertMany(usersData);
         console.log("User data inserted successfully.");
     }
     catch (error) {

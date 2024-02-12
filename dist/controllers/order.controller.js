@@ -11,7 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUserOrders = void 0;
 const order_service_1 = require("../services/order.service");
-const uuid = require("uuid");
+// const uuid = require("uuid");
+const mongoose_1 = require("mongoose");
 const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
@@ -35,9 +36,9 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
             }
             else {
                 const userOrder = {
-                    id: uuid.v4(),
-                    userId: userId,
-                    cartId: userCart.id,
+                    _id: new mongoose_1.Types.ObjectId(),
+                    userId: new mongoose_1.Types.ObjectId(userId),
+                    cartId: new mongoose_1.Types.ObjectId(userCart._id.toString()),
                     items: userCart.items,
                     payment: { type: "paypal" },
                     delivery: { type: "post", address: {} },

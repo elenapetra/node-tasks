@@ -2,10 +2,10 @@ import mongoose, { Schema } from "mongoose";
 import { OrderEntity } from "../../utils/types";
 import { cartItemSchema } from "./cart.model";
 
-const orderSchema = new mongoose.Schema<OrderEntity>({
-  id: { type: String, required: true },
-  userId: { type: String, required: true },
-  cartId: { type: String, required: true },
+export const orderSchema = new mongoose.Schema<OrderEntity>({
+  // _id: { type: String, required: true },
+  // userId: { type: String, required: true },
+  // cartId: { type: String, required: true },
   items: { type: [cartItemSchema], required: true },
   payment: {
     type: { type: String, required: true },
@@ -21,5 +21,4 @@ const orderSchema = new mongoose.Schema<OrderEntity>({
   total: { type: Number, required: true },
 });
 
-const OrderModel = mongoose.model<OrderEntity>("Order", orderSchema);
-export default OrderModel;
+export const OrderModel = mongoose.model<OrderEntity>("Order", orderSchema);

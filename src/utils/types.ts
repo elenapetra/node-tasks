@@ -1,22 +1,22 @@
-export interface UserEntity {
-  id: string;
-}
+import { Types, ObjectId } from "mongoose";
 
 export interface ProductEntity {
-  id: string;
+  _id: Types.ObjectId;
   title: string;
   description: string;
   price: number;
 }
-
+export interface UserEntity {
+  _id: Types.ObjectId;
+}
 export interface CartItemEntity {
   product: ProductEntity;
   count: number;
 }
 
 export interface CartEntity {
-  id: string;
-  userId: string;
+  _id: ObjectId;
+  userId: ObjectId;
   isDeleted: boolean;
   items: CartItemEntity[];
 }
@@ -24,9 +24,9 @@ export interface CartEntity {
 export type ORDER_STATUS = "created" | "completed";
 
 export interface OrderEntity {
-  id: string;
-  userId: string;
-  cartId: string;
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
+  cartId: Types.ObjectId;
   items: CartItemEntity[];
   payment: {
     type: string;

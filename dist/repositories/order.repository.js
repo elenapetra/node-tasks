@@ -28,7 +28,7 @@ const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllOrders = getAllOrders;
 const getUserOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield (0, exports.getAllOrders)();
-    const userOrders = orders.filter((order) => order.id === userId);
+    const userOrders = orders.filter((order) => order._id.toString() === userId);
     return userOrders;
 });
 exports.getUserOrder = getUserOrder;

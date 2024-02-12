@@ -5,7 +5,8 @@ import {
 } from "../services/order.service";
 import { CustomRequest } from "../middleware/auth.middleware";
 import { ORDER_STATUS } from "../utils/types";
-const uuid = require("uuid");
+// const uuid = require("uuid");
+import { Types } from "mongoose";
 
 export const createUserOrders = async (
   req: CustomRequest,
@@ -30,9 +31,9 @@ export const createUserOrders = async (
           .json({ data: null, error: { message: "Cart is empty" } });
       } else {
         const userOrder = {
-          id: uuid.v4(),
-          userId: userId,
-          cartId: userCart.id,
+          _id: new Types.ObjectId(),
+          userId: new Types.ObjectId(userId),
+          cartId: new Types.ObjectId(userCart._id.toString()),
           items: userCart.items,
           payment: { type: "paypal" },
           delivery: { type: "post", address: {} },

@@ -1,4 +1,4 @@
-import UserModel from "../models/schemas/user.model";
+import { UserModel } from "../models/schemas/user.model";
 import connectDB from "../db";
 const usersData = require("../data/users.json");
 

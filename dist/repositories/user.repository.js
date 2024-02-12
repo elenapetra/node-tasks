@@ -8,27 +8,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = void 0;
-const promises_1 = __importDefault(require("fs/promises"));
+exports.getUserById = void 0;
+const user_model_1 = require("../models/schemas/user.model");
 const dataFilePath = "src/data/users.json";
-const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+// export const getAllUsers = async (): Promise<UserEntity[]> => {
+//   try {
+//     const data = await fs.readFile(dataFilePath, "utf-8");
+//     return JSON.parse(data) || [];
+//   } catch (error) {
+//     console.error("Error reading users data:", error);
+//     return [];
+//   }
+// };
+// export const getUserById = async (
+//   userId: string
+// ): Promise<UserEntity | undefined> => {
+//   const users = await getAllUsers();
+//   const user = users.find((user: UserEntity) => user.id === userId);
+//   return user;
+// };
+const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield promises_1.default.readFile(dataFilePath, "utf-8");
-        return JSON.parse(data) || [];
+        console.log("userId: ", userId);
+        const user = yield user_model_1.UserModel.findOne({ _id: userId });
+        // console.log(user);
+        if (!user) {
+            console.log("User not found");
+            return undefined;
+        }
+        else {
+            console.log("User found successfully: ", user.toObject());
+            return user.toObject();
+        }
     }
     catch (error) {
-        console.error("Error reading users data:", error);
-        return [];
+        console.error("Error getting user data:", error);
+        return undefined;
     }
-});
-exports.getAllUsers = getAllUsers;
-const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, exports.getAllUsers)();
-    const user = users.find((user) => user.id === userId);
-    return user;
 });
 exports.getUserById = getUserById;

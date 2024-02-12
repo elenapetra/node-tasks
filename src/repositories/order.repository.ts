@@ -15,7 +15,7 @@ export const getAllOrders = async (): Promise<OrderEntity[]> => {
 
 export const getUserOrder = async (userId: string): Promise<OrderEntity[]> => {
   const orders = await getAllOrders();
-  const userOrders = orders.filter((order) => order.id === userId);
+  const userOrders = orders.filter((order) => order._id.toString() === userId);
   return userOrders;
 };
 

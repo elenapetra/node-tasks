@@ -1,6 +1,5 @@
 import { CartEntity } from "../utils/types";
-import CartModel from "../models/schemas/cart.model";
-import fs from "fs/promises";
+const CartModel = require("../models/schemas/cart.model");
 const uuid = require("uuid");
 
 const dataFilePath = "src/data/carts.json";

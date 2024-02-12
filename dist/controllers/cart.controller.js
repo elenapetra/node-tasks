@@ -25,10 +25,10 @@ const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 const responseData = {
                     data: {
                         cart: {
-                            id: userCart.id,
+                            id: userCart._id,
                             items: userCart.items.map((item) => ({
                                 product: {
-                                    id: item.product.id,
+                                    id: item.product._id,
                                     title: item.product.title,
                                     description: item.product.description,
                                     price: item.product.price,
@@ -118,11 +118,11 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         let updatedItems = [];
         if (count === 0) {
-            updatedItems = userCart.items.filter((item) => item.product.id !== productId);
+            updatedItems = userCart.items.filter((item) => item.product._id !== productId);
         }
         else {
             updatedItems = userCart.items.map((item) => {
-                if (item.product.id === productId) {
+                if (item.product._id === productId) {
                     return Object.assign(Object.assign({}, item), { count });
                 }
                 else {
@@ -130,7 +130,7 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 }
             });
         }
-        if (!userCart.items.some((item) => item.product.id === productId)) {
+        if (!userCart.items.some((item) => item.product._id === productId)) {
             const productDetails = yield (0, product_repository_1.getProductById)(productId);
             if (!productDetails) {
                 res.status(400).json({
@@ -144,12 +144,12 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         updatedItems = updatedItems.filter((item) => item.count > 0);
         yield (0, cart_service_1.updateCartService)(userId, updatedItems);
         const currentProduct = userCart.items.find((item) => {
-            return item.product.id === productId;
+            return item.product._id === productId;
         });
         if (currentProduct) {
             const data = {
                 cart: {
-                    id: userCart.id,
+                    id: userCart._id,
                     items: [currentProduct],
                 },
                 total: count * (currentProduct === null || currentProduct === void 0 ? void 0 : currentProduct.product.price),
