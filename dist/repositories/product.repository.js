@@ -13,22 +13,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductById = exports.getAllProducts = void 0;
-const promises_1 = __importDefault(require("fs/promises"));
+const product_model_1 = __importDefault(require("../models/schemas/product.model"));
 const dataFilePath = "src/data/products.json";
+// export const getAllProducts = async (): Promise<ProductEntity[]> => {
+//   try {
+//     const data = await fs.readFile(dataFilePath, "utf-8");
+//     return JSON.parse(data);
+//   } catch (error) {
+//     console.error("Error reading products data:", error);
+//     return [];
+//   }
+// };
+// export const getProductById = async (
+//   productId: string
+// ): Promise<ProductEntity | undefined> => {
+//   const products = await getAllProducts();
+//   const product = products.find(
+//     (product: ProductEntity) => product.id === productId
+//   );
+//   return product;
+// };
 const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield promises_1.default.readFile(dataFilePath, "utf-8");
-        return JSON.parse(data);
+        return yield product_model_1.default.find().exec();
     }
     catch (error) {
-        console.error("Error reading products data:", error);
+        console.error("Error fetching products from MongoDB:", error);
         return [];
     }
 });
 exports.getAllProducts = getAllProducts;
 const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield (0, exports.getAllProducts)();
-    const product = products.find((product) => product.id === productId);
-    return product;
+    try {
+        const product = yield product_model_1.default.findById(productId).exec();
+        return product ? product.toJSON() : undefined;
+    }
+    catch (error) {
+        console.error("Error fetching product by ID from MongoDB:", error);
+        return undefined;
+    }
 });
 exports.getProductById = getProductById;

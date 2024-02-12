@@ -1,14 +1,34 @@
 import { ProductEntity } from "../utils/types";
+import ProductModel from "../models/schemas/product.model";
 import fs from "fs/promises";
 
 const dataFilePath = "src/data/products.json";
 
+// export const getAllProducts = async (): Promise<ProductEntity[]> => {
+//   try {
+//     const data = await fs.readFile(dataFilePath, "utf-8");
+//     return JSON.parse(data);
+//   } catch (error) {
+//     console.error("Error reading products data:", error);
+//     return [];
+//   }
+// };
+
+// export const getProductById = async (
+//   productId: string
+// ): Promise<ProductEntity | undefined> => {
+//   const products = await getAllProducts();
+//   const product = products.find(
+//     (product: ProductEntity) => product.id === productId
+//   );
+//   return product;
+// };
+
 export const getAllProducts = async (): Promise<ProductEntity[]> => {
   try {
-    const data = await fs.readFile(dataFilePath, "utf-8");
-    return JSON.parse(data);
+    return await ProductModel.find().exec();
   } catch (error) {
-    console.error("Error reading products data:", error);
+    console.error("Error fetching products from MongoDB:", error);
     return [];
   }
 };
@@ -16,9 +36,11 @@ export const getAllProducts = async (): Promise<ProductEntity[]> => {
 export const getProductById = async (
   productId: string
 ): Promise<ProductEntity | undefined> => {
-  const products = await getAllProducts();
-  const product = products.find(
-    (product: ProductEntity) => product.id === productId
-  );
-  return product;
+  try {
+    const product = await ProductModel.findById(productId).exec();
+    return product ? (product.toJSON() as ProductEntity) : undefined;
+  } catch (error) {
+    console.error("Error fetching product by ID from MongoDB:", error);
+    return undefined;
+  }
 };

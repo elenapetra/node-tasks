@@ -10,7 +10,7 @@ export const getAllProducts = async (
 ): Promise<void> => {
   const products = await getAllProductsService();
   const responseBody = {
-    data: { ...products },
+    data: Object.values(products),
     error: null,
   };
   res.json(responseBody);

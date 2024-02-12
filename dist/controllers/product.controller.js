@@ -14,7 +14,7 @@ const product_service_1 = require("../services/product.service");
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const products = yield (0, product_service_1.getAllProductsService)();
     const responseBody = {
-        data: Object.assign({}, products),
+        data: Object.values(products),
         error: null,
     };
     res.json(responseBody);
