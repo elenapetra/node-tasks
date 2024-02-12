@@ -9,9 +9,6 @@ function handleRequest(req, res) {
   url = decodeURI(url);
   const [path, queryString] = url.split("?");
   const urlParts = path.split("/").filter((part) => part !== "");
-  console.log("path:", path);
-  console.log("querry string:", queryString);
-  console.log("urlParts:", urlParts);
 
   if (urlParts[0] === "users" && urlParts.length === 1) {
     handleUsersRoute(req, res, method);
@@ -28,8 +25,8 @@ function handleRequest(req, res) {
     /^\d+$/.test(urlParts[1]) &&
     urlParts[2] === "hobbies"
   ) {
-    const userIdForHobbies = urlParts[1];
-    handleHobbiesRoute(req, res, method, userIdForHobbies, queryString);
+    const userId = urlParts[1];
+    handleHobbiesRoute(req, res, method, userId, queryString);
   } else if (urlParts.length === 0) {
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/plain");
