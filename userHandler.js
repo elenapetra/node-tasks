@@ -1,6 +1,6 @@
-const users = require("./users.js").users;
+let users = require("./users.js").users;
 
-function createUser(req, resp) {
+function createUser(req, res) {
   const body = [];
   req
     .on("data", (data) => {
@@ -18,27 +18,26 @@ function createUser(req, resp) {
       newUser.links = {
         hobbies: `/users/${newUser.id}/hobbies`,
       };
-      resp.statusCode = 201;
-      resp.setHeader("Content-Type", "application/json");
-      resp.end(JSON.stringify(newUser));
+      res.statusCode = 201;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify(newUser));
     });
 }
 
-function deleteUser(resp, userId) {
+function deleteUser(res, userId) {
   const userIndex = users.findIndex((user) => user.id === parseInt(userId, 10));
-
   if (userIndex !== -1) {
     users.splice(userIndex, 1);
-    resp.statusCode = 204;
-    resp.end();
+    res.statusCode = 204;
+    res.end();
   } else {
-    resp.statusCode = 404;
-    resp.end("User not found");
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: "User not found" }));
   }
 }
 
-function updateUser(req, resp, userId) {
-  const userIndex = users.findIndex((user) => user.id === parseInt(userId, 10));
+function updateUser(req, res, userId) {
+  let userIndex = users.findIndex((user) => user.id === parseInt(userId, 10));
 
   if (userIndex !== -1) {
     const body = [];
@@ -49,26 +48,25 @@ function updateUser(req, resp, userId) {
       .on("end", () => {
         const userData = JSON.parse(Buffer.concat(body).toString());
         users[userIndex] = { ...users[userIndex], ...userData };
-        resp.statusCode = 200;
-        resp.setHeader("Content-Type", "application/json");
-        resp.end(JSON.stringify(users[userIndex]));
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(users[userIndex]));
       });
   } else {
-    resp.statusCode = 404;
-    resp.end("User not found");
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: "User not found" }));
   }
 }
 
-function getUserById(resp, userId) {
+function getUserById(res, userId) {
   const user = users.find((user) => user.id === parseInt(userId, 10));
-
   if (user) {
     user.links = {
       hobbies: `/users/${user.id}/hobbies`,
     };
-    resp.statusCode = 200;
-    resp.setHeader("Content-Type", "application/json");
-    resp.end(
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.end(
       JSON.stringify({
         id: user.id,
         name: user.name,
@@ -77,15 +75,15 @@ function getUserById(resp, userId) {
       })
     );
   } else {
-    resp.statusCode = 404;
-    resp.end("User not found");
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: "User not found" }));
   }
 }
 
-function getUsers(resp) {
-  resp.statusCode = 200;
-  resp.setHeader("Content-Type", "application/json");
-  resp.end(
+function getUsers(res) {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "application/json");
+  res.end(
     JSON.stringify(
       users.map((user) => ({
         id: user.id,
@@ -96,10 +94,9 @@ function getUsers(resp) {
   );
 }
 
-function addHobby(req, resp, userId) {
-  const userIndex = users.findIndex((user) => user.id === parseInt(userId, 10));
-
-  if (userIndex !== -1) {
+function addHobby(req, res, userId) {
+  const user = users.find((user) => user.id === parseInt(userId, 10));
+  if (user) {
     let body = [];
     req
       .on("data", (data) => {
@@ -107,56 +104,57 @@ function addHobby(req, resp, userId) {
       })
       .on("end", () => {
         body = JSON.parse(Buffer.concat(body).toString());
-        users[userIndex].hobbies = users[userIndex].hobbies.concat(body);
+        user.hobbies.push(...body);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(user.hobbies));
+      });
+  } else {
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: "User not found" }));
+  }
+}
+
+function deleteHobby(resp, userId, hobbyName) {
+  const user = users.find((user) => user.id === parseInt(userId, 10));
+  if (user) {
+    if (hobbyName) {
+      const hobbyNameParam = new URLSearchParams(hobbyName).get("hobbyName");
+      const lowercasedHobbyName = hobbyNameParam
+        ? hobbyNameParam.toLowerCase()
+        : null;
+      const hobbyIndex = user.hobbies.findIndex(
+        (hobby) => hobby.toLowerCase() === lowercasedHobbyName
+      );
+      if (hobbyIndex !== -1) {
+        user.hobbies.splice(hobbyIndex, 1);
         resp.statusCode = 200;
         resp.setHeader("Content-Type", "application/json");
-        resp.end(JSON.stringify(users[userIndex].hobbies));
-      });
+        resp.end(JSON.stringify(user.hobbies));
+      } else {
+        resp.statusCode = 404;
+        resp.end("Hobby not found");
+      }
+    } else {
+      resp.statusCode = 400;
+      resp.end("Missing hobby name in query parameters");
+    }
   } else {
     resp.statusCode = 404;
     resp.end("User not found");
   }
 }
 
-function deleteHobby(req, resp, userId) {
-  const userIndex = users.findIndex((user) => user.id === parseInt(userId, 10));
-
-  if (userIndex !== -1) {
-    const body = [];
-    req
-      .on("data", (data) => {
-        body.push(data);
-      })
-      .on("end", () => {
-        const hobbyData = JSON.parse(Buffer.concat(body).toString());
-        const hobbyIndex = users[userIndex].hobbies.indexOf(hobbyData);
-        if (hobbyIndex !== -1) {
-          users[userIndex].hobbies.splice(hobbyIndex, 1);
-          resp.statusCode = 200;
-          resp.setHeader("Content-Type", "application/json");
-          resp.end(JSON.stringify(users[userIndex].hobbies));
-        } else {
-          resp.statusCode = 404;
-          resp.end("Hobby not found");
-        }
-      });
-  } else {
-    resp.statusCode = 404;
-    resp.end("User not found");
-  }
-}
-
-function getUserHobbies(resp, userId) {
+function getUserHobbies(res, userId) {
   const user = users.find((user) => user.id === parseInt(userId, 10));
-
   if (user) {
-    resp.statusCode = 200;
-    resp.setHeader("Content-Type", "application/json");
-    resp.setHeader("Cache-Control", "max-age=31536000");
-    resp.end(JSON.stringify(user.hobbies));
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Cache-Control", "max-age=31536000");
+    res.end(JSON.stringify(user.hobbies));
   } else {
-    resp.statusCode = 404;
-    resp.end("User not found");
+    res.statusCode = 404;
+    res.end(JSON.stringify({ error: "User not found" }));
   }
 }
 

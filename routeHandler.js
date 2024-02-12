@@ -9,51 +9,51 @@ const {
   getUserHobbies,
 } = require("./userHandler");
 
-function handleUsersRoute(req, resp, method) {
+function handleUsersRoute(req, res, method) {
   switch (method) {
     case "POST":
-      createUser(req, resp);
+      createUser(req, res);
       break;
     case "GET":
-      getUsers(resp);
+      getUsers(res);
       break;
     default:
-      resp.statusCode = 405;
-      resp.end("Method not allowed");
+      res.statusCode = 405;
+      res.end("Method not allowed");
   }
 }
 
-function handleSingleUserRoute(req, resp, method, userId) {
+function handleSingleUserRoute(req, res, method, userId) {
   switch (method) {
     case "DELETE":
-      deleteUser(resp, userId);
+      deleteUser(res, userId);
       break;
     case "PATCH":
-      updateUser(req, resp, userId);
+      updateUser(req, res, userId);
       break;
     case "GET":
-      getUserById(resp, userId);
+      getUserById(res, userId);
       break;
     default:
-      resp.statusCode = 405;
-      resp.end("Method not allowed");
+      res.statusCode = 405;
+      res.end("Method not allowed");
   }
 }
 
-function handleHobbiesRoute(req, resp, method, userId) {
+function handleHobbiesRoute(req, res, method, userId, queryString) {
   switch (method) {
     case "POST":
-      addHobby(req, resp, userId);
+      addHobby(req, res, userId, queryString);
       break;
     case "DELETE":
-      deleteHobby(req, resp, userId);
+      deleteHobby(res, userId, queryString);
       break;
     case "GET":
-      getUserHobbies(resp, userId);
+      getUserHobbies(res, userId);
       break;
     default:
-      resp.statusCode = 405;
-      resp.end("Method not allowed");
+      res.statusCode = 405;
+      res.end("Method not allowed");
   }
 }
 
