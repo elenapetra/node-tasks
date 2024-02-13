@@ -3,9 +3,8 @@ import { OrderEntity } from "../../utils/types";
 import { cartItemSchema } from "./cart.model";
 
 export const orderSchema = new mongoose.Schema<OrderEntity>({
-  // _id: { type: String, required: true },
-  // userId: { type: String, required: true },
-  // cartId: { type: String, required: true },
+  userId: { type: String, required: true },
+  cartId: { type: String, required: true },
   items: { type: [cartItemSchema], required: true },
   payment: {
     type: { type: String, required: true },

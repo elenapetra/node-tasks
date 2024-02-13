@@ -11,7 +11,6 @@ exports.cartItemSchema = new mongoose_1.default.Schema({
     count: { type: Number, required: true },
 });
 exports.cartSchema = new mongoose_1.default.Schema({
-    _id: { type: String, required: true },
     userId: { type: String, required: true },
     isDeleted: { type: Boolean, required: true },
     items: { type: [exports.cartItemSchema], required: true },

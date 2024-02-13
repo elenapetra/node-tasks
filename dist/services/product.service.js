@@ -24,7 +24,7 @@ const getAllProductsService = () => __awaiter(void 0, void 0, void 0, function* 
 exports.getAllProductsService = getAllProductsService;
 const getProductByIdService = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield (0, product_repository_1.getProductById)(productId);
+        const product = yield (0, product_repository_1.getProductById)(productId.toString());
         return product;
     }
     catch (error) {

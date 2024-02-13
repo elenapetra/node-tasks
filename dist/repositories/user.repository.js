@@ -11,34 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserById = void 0;
 const user_model_1 = require("../models/schemas/user.model");
-const dataFilePath = "src/data/users.json";
-// export const getAllUsers = async (): Promise<UserEntity[]> => {
-//   try {
-//     const data = await fs.readFile(dataFilePath, "utf-8");
-//     return JSON.parse(data) || [];
-//   } catch (error) {
-//     console.error("Error reading users data:", error);
-//     return [];
-//   }
-// };
-// export const getUserById = async (
-//   userId: string
-// ): Promise<UserEntity | undefined> => {
-//   const users = await getAllUsers();
-//   const user = users.find((user: UserEntity) => user.id === userId);
-//   return user;
-// };
 const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("userId: ", userId);
         const user = yield user_model_1.UserModel.findOne({ _id: userId });
-        // console.log(user);
         if (!user) {
-            console.log("User not found");
             return undefined;
         }
         else {
-            console.log("User found successfully: ", user.toObject());
             return user.toObject();
         }
     }

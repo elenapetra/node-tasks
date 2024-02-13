@@ -1,5 +1,6 @@
 import { OrderEntity } from "../utils/types";
 import fs from "fs/promises";
+import { OrderModel } from "../models/schemas/order.model";
 
 const dataFilePath = "src/data/orders.json";
 

@@ -27,9 +27,8 @@ exports.OrderModel = exports.orderSchema = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const cart_model_1 = require("./cart.model");
 exports.orderSchema = new mongoose_1.default.Schema({
-    // _id: { type: String, required: true },
-    // userId: { type: String, required: true },
-    // cartId: { type: String, required: true },
+    userId: { type: String, required: true },
+    cartId: { type: String, required: true },
     items: { type: [cart_model_1.cartItemSchema], required: true },
     payment: {
         type: { type: String, required: true },

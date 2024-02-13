@@ -122,38 +122,20 @@ export const updateCart = async (
       return;
     }
 
-    let updatedItems = [];
-    if (count === 0) {
-      updatedItems = userCart.items.filter(
-        (item) => item.product._id !== productId
-      );
-    } else {
-      updatedItems = userCart.items.map((item) => {
-        if (item.product._id === productId) {
-          return { ...item, count };
-        } else {
-          return item;
-        }
-      });
+    const fetchingProduct = await getProductById(productId);
+
+    if (fetchingProduct) {
+      const itemToUpdate = {
+        product: fetchingProduct,
+        count: count,
+      };
+      await updateCartService(userId, itemToUpdate);
     }
 
-    if (!userCart.items.some((item) => item.product._id === productId)) {
-      const productDetails = await getProductById(productId);
-      if (!productDetails) {
-        res.status(400).json({
-          data: null,
-          error: { message: "Products are not valid" },
-        });
-        return;
-      }
-      updatedItems.push({ product: productDetails, count });
-    }
-
-    updatedItems = updatedItems.filter((item) => item.count > 0);
-    await updateCartService(userId, updatedItems);
     const currentProduct = userCart.items.find((item) => {
       return item.product._id === productId;
     });
+
     if (currentProduct) {
       const data = {
         cart: {

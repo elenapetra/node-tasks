@@ -5,14 +5,10 @@ export const getUserById = async (
   userId: string
 ): Promise<UserEntity | undefined> => {
   try {
-    console.log("userId: ", userId);
     const user = await UserModel.findOne({ _id: userId });
-    console.log(user);
     if (!user) {
-      console.log("User not found");
       return undefined;
     } else {
-      console.log("User found successfully: ", user.toObject());
       return user.toObject();
     }
   } catch (error) {

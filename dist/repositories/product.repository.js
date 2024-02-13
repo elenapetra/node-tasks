@@ -10,29 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductById = exports.getAllProducts = void 0;
-const ProductModel = require("../models/schemas/product.model");
-const dataFilePath = "src/data/products.json";
-// export const getAllProducts = async (): Promise<ProductEntity[]> => {
-//   try {
-//     const data = await fs.readFile(dataFilePath, "utf-8");
-//     return JSON.parse(data);
-//   } catch (error) {
-//     console.error("Error reading products data:", error);
-//     return [];
-//   }
-// };
-// export const getProductById = async (
-//   productId: string
-// ): Promise<ProductEntity | undefined> => {
-//   const products = await getAllProducts();
-//   const product = products.find(
-//     (product: ProductEntity) => product.id === productId
-//   );
-//   return product;
-// };
+const product_model_1 = require("../models/schemas/product.model");
 const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return yield ProductModel.find().exec();
+        return yield product_model_1.ProductModel.find().exec();
     }
     catch (error) {
         console.error("Error fetching products from MongoDB:", error);
@@ -42,7 +23,7 @@ const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllProducts = getAllProducts;
 const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield ProductModel.findById(productId).exec();
+        const product = yield product_model_1.ProductModel.findById(productId).exec();
         return product ? product.toJSON() : undefined;
     }
     catch (error) {

@@ -116,33 +116,14 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
             return;
         }
-        let updatedItems = [];
-        if (count === 0) {
-            updatedItems = userCart.items.filter((item) => item.product._id !== productId);
+        const fetchingProduct = yield (0, product_repository_1.getProductById)(productId);
+        if (fetchingProduct) {
+            const itemToUpdate = {
+                product: fetchingProduct,
+                count: count,
+            };
+            yield (0, cart_service_1.updateCartService)(userId, itemToUpdate);
         }
-        else {
-            updatedItems = userCart.items.map((item) => {
-                if (item.product._id === productId) {
-                    return Object.assign(Object.assign({}, item), { count });
-                }
-                else {
-                    return item;
-                }
-            });
-        }
-        if (!userCart.items.some((item) => item.product._id === productId)) {
-            const productDetails = yield (0, product_repository_1.getProductById)(productId);
-            if (!productDetails) {
-                res.status(400).json({
-                    data: null,
-                    error: { message: "Products are not valid" },
-                });
-                return;
-            }
-            updatedItems.push({ product: productDetails, count });
-        }
-        updatedItems = updatedItems.filter((item) => item.count > 0);
-        yield (0, cart_service_1.updateCartService)(userId, updatedItems);
         const currentProduct = userCart.items.find((item) => {
             return item.product._id === productId;
         });

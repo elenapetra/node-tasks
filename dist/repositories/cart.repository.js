@@ -10,42 +10,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkoutCart = exports.deleteCart = exports.updateCart = exports.getCart = void 0;
-const CartModel = require("../models/schemas/cart.model");
-const uuid = require("uuid");
-const dataFilePath = "src/data/carts.json";
-// export const getCart = async (
-//   userId: string
-// ): Promise<CartEntity | undefined> => {
-//   try {
-//     const carts = await getAllCarts();
-//     let userCart = carts.find(
-//       (cart: CartEntity) => cart.userId === userId && !cart.isDeleted
-//     );
-//     if (!userCart) {
-//       userCart = {
-//         id: uuid.v4(),
-//         userId: userId,
-//         isDeleted: false,
-//         items: [],
-//       };
-//       carts.push(userCart);
-//       await fs.writeFile(dataFilePath, JSON.stringify(carts, null, 2));
-//     }
-//     return userCart;
-//   } catch (error) {
-//     console.error("Error reading carts data:", error);
-//     return undefined;
-//   }
-// };
+const cart_model_1 = require("../models/schemas/cart.model");
 const getCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userCart = yield CartModel.findOne({
+        let userCart = yield cart_model_1.CartModel.findOne({
             userId: userId,
             isDeleted: false,
         });
         if (!userCart) {
-            const newCart = new CartModel({
-                id: uuid.v4(),
+            const existingDeletedCart = yield cart_model_1.CartModel.findOneAndUpdate({ userId: userId, isDeleted: true }, { $set: { isDeleted: false } }, { new: true });
+            if (existingDeletedCart) {
+                return existingDeletedCart.toObject();
+            }
+            const newCart = new cart_model_1.CartModel({
                 userId: userId,
                 isDeleted: false,
                 items: [],
@@ -80,7 +57,7 @@ exports.getCart = getCart;
 // };
 const updateCart = (userId, updatedCart) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cartToUpdate = yield CartModel.findByIdAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: updatedCart.items } }, { new: true });
+        const cartToUpdate = yield cart_model_1.CartModel.findOneAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: updatedCart.items } }, { new: true });
         if (!cartToUpdate) {
             console.error("User's cart not found or is deleted.");
             return;
@@ -92,23 +69,17 @@ const updateCart = (userId, updatedCart) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.updateCart = updateCart;
-// export const deleteCart = async (userId: string): Promise<void> => {
-//   const carts = await getAllCarts();
-//   const updatedCartList = carts.map((cart: CartEntity) => {
-//     if (cart.userId === userId && !cart.isDeleted) {
-//       return { ...cart, items: [], isDeleted: true };
-//     }
-//     return cart;
-//   });
-//   await fs.writeFile(
-//     dataFilePath,
-//     JSON.stringify(updatedCartList, null, 2),
-//     "utf-8"
-//   );
-// };
 const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deletedCart = yield CartModel.findByIdAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: [], isDeleted: true } }, { new: true });
+        const existingDeletedCart = yield cart_model_1.CartModel.findOne({
+            userId: userId,
+            isDeleted: true,
+        });
+        if (existingDeletedCart) {
+            yield cart_model_1.CartModel.deleteOne({ _id: existingDeletedCart._id });
+            console.log("Existing deleted cart removed successfully");
+        }
+        const deletedCart = yield cart_model_1.CartModel.findOneAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: [], isDeleted: true } }, { new: true });
         if (!deletedCart) {
             console.error("User's cart not found or is already deleted.");
             return;
@@ -131,7 +102,7 @@ exports.deleteCart = deleteCart;
 // };
 const checkoutCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userCart = yield CartModel.findOne({
+        const userCart = yield cart_model_1.CartModel.findOne({
             userId: userId,
             isDeleted: false,
         });

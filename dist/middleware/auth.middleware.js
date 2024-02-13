@@ -13,7 +13,6 @@ exports.authMiddleware = void 0;
 const user_repository_1 = require("../repositories/user.repository");
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.headers["x-user-id"];
-    console.log("Id from header: " + userId);
     if (typeof userId === "string") {
         try {
             if (userId === "admin") {

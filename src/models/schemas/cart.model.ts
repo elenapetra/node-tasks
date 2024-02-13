@@ -8,7 +8,6 @@ export const cartItemSchema = new mongoose.Schema<CartItemEntity>({
 });
 
 export const cartSchema = new mongoose.Schema<CartEntity>({
-  _id: { type: String, required: true },
   userId: { type: String, required: true },
   isDeleted: { type: Boolean, required: true },
   items: { type: [cartItemSchema], required: true },

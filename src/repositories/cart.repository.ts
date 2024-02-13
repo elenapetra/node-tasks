@@ -1,46 +1,24 @@
 import { CartEntity } from "../utils/types";
-const CartModel = require("../models/schemas/cart.model");
-const uuid = require("uuid");
-
-const dataFilePath = "src/data/carts.json";
-
-// export const getCart = async (
-//   userId: string
-// ): Promise<CartEntity | undefined> => {
-//   try {
-//     const carts = await getAllCarts();
-//     let userCart = carts.find(
-//       (cart: CartEntity) => cart.userId === userId && !cart.isDeleted
-//     );
-//     if (!userCart) {
-//       userCart = {
-//         id: uuid.v4(),
-//         userId: userId,
-//         isDeleted: false,
-//         items: [],
-//       };
-//       carts.push(userCart);
-//       await fs.writeFile(dataFilePath, JSON.stringify(carts, null, 2));
-//     }
-//     return userCart;
-//   } catch (error) {
-//     console.error("Error reading carts data:", error);
-//     return undefined;
-//   }
-// };
+import { CartModel } from "../models/schemas/cart.model";
 
 export const getCart = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   try {
-    const userCart = await CartModel.findOne({
+    let userCart = await CartModel.findOne({
       userId: userId,
       isDeleted: false,
     });
-
     if (!userCart) {
+      const existingDeletedCart = await CartModel.findOneAndUpdate(
+        { userId: userId, isDeleted: true },
+        { $set: { isDeleted: false } },
+        { new: true }
+      );
+      if (existingDeletedCart) {
+        return existingDeletedCart.toObject();
+      }
       const newCart = new CartModel({
-        id: uuid.v4(),
         userId: userId,
         isDeleted: false,
         items: [],
@@ -48,6 +26,7 @@ export const getCart = async (
       await newCart.save();
       return newCart.toObject();
     }
+
     return userCart.toObject();
   } catch (error) {
     console.error("Error getting cart data:", error);
@@ -78,7 +57,7 @@ export const updateCart = async (
   updatedCart: { items: CartEntity["items"] }
 ): Promise<void> => {
   try {
-    const cartToUpdate = await CartModel.findByIdAndUpdate(
+    const cartToUpdate = await CartModel.findOneAndUpdate(
       { userId: userId, isDeleted: false },
       { $set: { items: updatedCart.items } },
       { new: true }
@@ -93,24 +72,17 @@ export const updateCart = async (
   }
 };
 
-// export const deleteCart = async (userId: string): Promise<void> => {
-//   const carts = await getAllCarts();
-//   const updatedCartList = carts.map((cart: CartEntity) => {
-//     if (cart.userId === userId && !cart.isDeleted) {
-//       return { ...cart, items: [], isDeleted: true };
-//     }
-//     return cart;
-//   });
-//   await fs.writeFile(
-//     dataFilePath,
-//     JSON.stringify(updatedCartList, null, 2),
-//     "utf-8"
-//   );
-// };
-
 export const deleteCart = async (userId: string): Promise<void> => {
   try {
-    const deletedCart = await CartModel.findByIdAndUpdate(
+    const existingDeletedCart = await CartModel.findOne({
+      userId: userId,
+      isDeleted: true,
+    });
+    if (existingDeletedCart) {
+      await CartModel.deleteOne({ _id: existingDeletedCart._id });
+      console.log("Existing deleted cart removed successfully");
+    }
+    const deletedCart = await CartModel.findOneAndUpdate(
       { userId: userId, isDeleted: false },
       { $set: { items: [], isDeleted: true } },
       { new: true }

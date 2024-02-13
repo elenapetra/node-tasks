@@ -16,7 +16,7 @@ export interface CartItemEntity {
 
 export interface CartEntity {
   _id: ObjectId;
-  userId: ObjectId;
+  userId: string;
   isDeleted: boolean;
   items: CartItemEntity[];
 }
@@ -25,8 +25,8 @@ export type ORDER_STATUS = "created" | "completed";
 
 export interface OrderEntity {
   _id: Types.ObjectId;
-  userId: Types.ObjectId;
-  cartId: Types.ObjectId;
+  userId: string;
+  cartId: string;
   items: CartItemEntity[];
   payment: {
     type: string;

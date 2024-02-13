@@ -13,7 +13,6 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<any> => {
   const userId = req.headers["x-user-id"];
-  console.log("Id from header: " + userId);
   if (typeof userId === "string") {
     try {
       if (userId === "admin") {

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Document, ObjectId } from "mongoose";
 import { ProductEntity } from "../../utils/types";
 
 export const productSchema = new mongoose.Schema<ProductEntity>({
