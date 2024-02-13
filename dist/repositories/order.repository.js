@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveOrder = exports.getUserOrder = exports.getAllOrders = void 0;
+exports.saveOrderObject = exports.getOrderObject = exports.getAllOrders = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const dataFilePath = "src/data/orders.json";
 const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,15 +26,15 @@ const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getAllOrders = getAllOrders;
-const getUserOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getOrderObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield (0, exports.getAllOrders)();
     const userOrders = orders.filter((order) => order.id === userId);
     return userOrders;
 });
-exports.getUserOrder = getUserOrder;
-const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getOrderObject = getOrderObject;
+const saveOrderObject = (order) => __awaiter(void 0, void 0, void 0, function* () {
     const orders = yield (0, exports.getAllOrders)();
     orders.push(order);
     yield promises_1.default.writeFile(dataFilePath, JSON.stringify(orders, null, 2), "utf-8");
 });
-exports.saveOrder = saveOrder;
+exports.saveOrderObject = saveOrderObject;

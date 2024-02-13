@@ -13,7 +13,7 @@ export const getAllProducts = async (): Promise<ProductEntity[]> => {
   }
 };
 
-export const getProductById = async (
+export const getProductObjectById = async (
   productId: string
 ): Promise<ProductEntity | undefined> => {
   const products = await getAllProducts();

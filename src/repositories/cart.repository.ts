@@ -14,7 +14,7 @@ export const getAllCarts = async (): Promise<CartEntity[]> => {
   }
 };
 
-export const getCart = async (
+export const getCartObject = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   try {
@@ -39,7 +39,7 @@ export const getCart = async (
   }
 };
 
-export const updateCart = async (
+export const updateCartObject = async (
   userId: string,
   updatedCart: { items: CartEntity["items"] }
 ): Promise<void> => {
@@ -57,7 +57,7 @@ export const updateCart = async (
   );
 };
 
-export const deleteCart = async (userId: string): Promise<void> => {
+export const deleteCartObject = async (userId: string): Promise<void> => {
   const carts = await getAllCarts();
   const updatedCartList = carts.map((cart: CartEntity) => {
     if (cart.userId === userId && !cart.isDeleted) {
@@ -72,7 +72,7 @@ export const deleteCart = async (userId: string): Promise<void> => {
   );
 };
 
-export const checkoutCart = async (
+export const checkoutCartObject = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   const carts = await getAllCarts();

@@ -1,14 +1,11 @@
 import { Request, Response } from "express";
-import {
-  getAllProductsService,
-  getProductByIdService,
-} from "../services/product.service";
+import { getProducts, getProductById } from "../services/product.service";
 
 export const getAllProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const products = await getAllProductsService();
+  const products = await getProducts();
   const responseBody = {
     data: { ...products },
     error: null,
@@ -16,12 +13,12 @@ export const getAllProducts = async (
   res.json(responseBody);
 };
 
-export const getProductById = async (
+export const getProduct = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   const productId = req.params.productId;
-  const product = await getProductByIdService(productId);
+  const product = await getProductById(productId);
   if (!product) {
     res
       .status(404)

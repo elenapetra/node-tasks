@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getAllUsers = void 0;
+exports.getUserObjectById = exports.getAllUsers = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const dataFilePath = "src/data/users.json";
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,9 +26,9 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getAllUsers = getAllUsers;
-const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserObjectById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield (0, exports.getAllUsers)();
     const user = users.find((user) => user.id === userId);
     return user;
 });
-exports.getUserById = getUserById;
+exports.getUserObjectById = getUserObjectById;

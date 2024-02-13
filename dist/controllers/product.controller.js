@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductById = exports.getAllProducts = void 0;
+exports.getProduct = exports.getAllProducts = void 0;
 const product_service_1 = require("../services/product.service");
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield (0, product_service_1.getAllProductsService)();
+    const products = yield (0, product_service_1.getProducts)();
     const responseBody = {
         data: Object.assign({}, products),
         error: null,
@@ -20,9 +20,9 @@ const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
     res.json(responseBody);
 });
 exports.getAllProducts = getAllProducts;
-const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = req.params.productId;
-    const product = yield (0, product_service_1.getProductByIdService)(productId);
+    const product = yield (0, product_service_1.getProductById)(productId);
     if (!product) {
         res
             .status(404)
@@ -35,4 +35,4 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     };
     res.json(responseBody);
 });
-exports.getProductById = getProductById;
+exports.getProduct = getProduct;

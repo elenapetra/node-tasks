@@ -9,31 +9,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCartService = exports.updateCartService = exports.getCartService = void 0;
+exports.deleteCart = exports.updateCart = exports.getCart = void 0;
 const cart_repository_1 = require("../repositories/cart.repository");
-const getCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const userCart = yield (0, cart_repository_1.getCart)(userId);
+const getCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const userCart = yield (0, cart_repository_1.getCartObject)(userId);
     return userCart;
 });
-exports.getCartService = getCartService;
-const updateCartService = (userId, updatedItems) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getCart = getCart;
+const updateCart = (userId, updatedItems) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingCart = yield (0, cart_repository_1.getCart)(userId);
+        const existingCart = yield (0, cart_repository_1.getCartObject)(userId);
         if (!existingCart) {
             console.error("Cart not found for user:", userId);
             return;
         }
         existingCart.items = updatedItems;
-        yield (0, cart_repository_1.updateCart)(userId, { items: existingCart.items });
+        yield (0, cart_repository_1.updateCartObject)(userId, { items: existingCart.items });
     }
     catch (error) {
         console.error("Error updating cart:", error);
         throw new Error("Internal Server Error");
     }
 });
-exports.updateCartService = updateCartService;
-const deleteCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const deletedCart = yield (0, cart_repository_1.deleteCart)(userId);
+exports.updateCart = updateCart;
+const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const deletedCart = yield (0, cart_repository_1.deleteCartObject)(userId);
     return deletedCart;
 });
-exports.deleteCartService = deleteCartService;
+exports.deleteCart = deleteCart;

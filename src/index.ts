@@ -18,15 +18,15 @@ app.use(bodyParser.json());
 
 userRouter.get("/cart", CartController.getUserCart);
 
-userRouter.put("/cart", CartController.updateCart);
+userRouter.put("/cart", CartController.updateUserCart);
 
-userRouter.delete("/cart", CartController.deleteCart);
+userRouter.delete("/cart", CartController.deleteUserCart);
 
-userRouter.post("/cart/checkout", OrderController.createUserOrders);
+userRouter.post("/cart/checkout", OrderController.createUserOrder);
 
 productRouter.get("/products", ProductController.getAllProducts);
 
-productRouter.get("/products/:productId", ProductController.getProductById);
+productRouter.get("/products/:productId", ProductController.getProduct);
 
 app.use("/api/profile", userRouter);
 app.use("/api/", productRouter);

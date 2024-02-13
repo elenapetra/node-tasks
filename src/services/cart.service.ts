@@ -1,36 +1,36 @@
 import { CartEntity } from "../utils/types";
 import {
-  deleteCart,
-  getCart,
-  updateCart,
+  deleteCartObject,
+  getCartObject,
+  updateCartObject,
 } from "../repositories/cart.repository";
 
-export const getCartService = async (
+export const getCart = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
-  const userCart = await getCart(userId);
+  const userCart = await getCartObject(userId);
   return userCart;
 };
 
-export const updateCartService = async (
+export const updateCart = async (
   userId: string,
   updatedItems: CartEntity["items"]
 ): Promise<void> => {
   try {
-    const existingCart = await getCart(userId);
+    const existingCart = await getCartObject(userId);
     if (!existingCart) {
       console.error("Cart not found for user:", userId);
       return;
     }
     existingCart.items = updatedItems;
-    await updateCart(userId, { items: existingCart.items });
+    await updateCartObject(userId, { items: existingCart.items });
   } catch (error) {
     console.error("Error updating cart:", error);
     throw new Error("Internal Server Error");
   }
 };
 
-export const deleteCartService = async (userId: string): Promise<void> => {
-  const deletedCart = await deleteCart(userId);
+export const deleteCart = async (userId: string): Promise<void> => {
+  const deletedCart = await deleteCartObject(userId);
   return deletedCart;
 };

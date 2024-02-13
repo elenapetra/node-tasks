@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "d7d58ac0-4e96-42ee-9fbf-93faf54b7be4",
+    "userId": "1",
+    "isDeleted": false,
+    "items": []
+  },
+  {
+    "id": "57719948-b948-422e-a969-9137ad17a6d2",
+    "userId": "2",
+    "isDeleted": false,
+    "items": []
+  }
+]

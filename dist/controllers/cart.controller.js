@@ -12,48 +12,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCart = exports.deleteCart = exports.getUserCart = void 0;
+exports.updateUserCart = exports.deleteUserCart = exports.getUserCart = void 0;
 const cart_service_1 = require("../services/cart.service");
 const product_repository_1 = require("../repositories/product.repository");
 const joi_1 = __importDefault(require("joi"));
 const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     try {
-        if (userId) {
-            const userCart = yield (0, cart_service_1.getCartService)(userId);
-            if (userCart) {
-                const responseData = {
-                    data: {
-                        cart: {
-                            id: userCart.id,
-                            items: userCart.items.map((item) => ({
-                                product: {
-                                    id: item.product.id,
-                                    title: item.product.title,
-                                    description: item.product.description,
-                                    price: item.product.price,
-                                },
-                                count: item.count,
-                            })),
-                        },
-                        total: userCart.items.reduce((total, item) => total + item.product.price * item.count, 0),
-                    },
-                    error: null,
-                };
-                res.status(200).json(responseData);
-            }
-            else {
-                res
-                    .status(404)
-                    .json({ data: null, error: { message: "Cart not found." } });
-            }
-        }
-        else {
+        if (!userId) {
             res.status(401).json({
                 data: null,
                 error: { message: "You must be an authorized user" },
             });
+            return;
         }
+        const userCart = yield (0, cart_service_1.getCart)(userId);
+        if (!userCart) {
+            res
+                .status(404)
+                .json({ data: null, error: { message: "Cart not found." } });
+            return;
+        }
+        const total = userCart.items.reduce((total, item) => total + item.product.price * item.count, 0);
+        const responseData = {
+            data: {
+                cart: userCart,
+                total: total,
+            },
+            error: null,
+        };
+        res.status(200).json(responseData);
     }
     catch (error) {
         res
@@ -62,25 +50,25 @@ const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserCart = getUserCart;
-const deleteCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
+    if (!userId) {
+        res.status(401).json({
+            data: null,
+            error: { message: "User is not authorized" },
+        });
+        return;
+    }
     try {
-        if (userId) {
-            yield (0, cart_service_1.deleteCartService)(userId);
-            res.status(200).json({ data: { success: true }, error: null });
-        }
-        else {
-            res
-                .status(401)
-                .json({ data: null, error: { message: "User is not authorized" } });
-        }
+        yield (0, cart_service_1.deleteCart)(userId);
+        res.status(200).json({ data: { success: true }, error: null });
     }
     catch (error) {
         console.error("Error deleting cart:", error);
     }
 });
-exports.deleteCart = deleteCart;
-const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteUserCart = deleteUserCart;
+const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const orderSchema = joi_1.default.object({
@@ -105,14 +93,12 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
             return;
         }
-        const userCart = yield (0, cart_service_1.getCartService)(userId);
+        const userCart = yield (0, cart_service_1.getCart)(userId);
         const { productId, count } = value;
         if (!userCart) {
             res.status(404).json({
                 data: null,
-                error: {
-                    message: "Cart was not found",
-                },
+                error: { message: "Cart was not found" },
             });
             return;
         }
@@ -131,7 +117,7 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
         if (!userCart.items.some((item) => item.product.id === productId)) {
-            const productDetails = yield (0, product_repository_1.getProductById)(productId);
+            const productDetails = yield (0, product_repository_1.getProductObjectById)(productId);
             if (!productDetails) {
                 res.status(400).json({
                     data: null,
@@ -142,17 +128,15 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             updatedItems.push({ product: productDetails, count });
         }
         updatedItems = updatedItems.filter((item) => item.count > 0);
-        yield (0, cart_service_1.updateCartService)(userId, updatedItems);
-        const currentProduct = userCart.items.find((item) => {
-            return item.product.id === productId;
-        });
+        yield (0, cart_service_1.updateCart)(userId, updatedItems);
+        const currentProduct = userCart.items.find((item) => item.product.id === productId);
         if (currentProduct) {
             const data = {
                 cart: {
                     id: userCart.id,
                     items: [currentProduct],
                 },
-                total: count * (currentProduct === null || currentProduct === void 0 ? void 0 : currentProduct.product.price),
+                total: count * currentProduct.product.price,
             };
             const responseBody = {
                 data,
@@ -169,4 +153,4 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
 });
-exports.updateCart = updateCart;
+exports.updateUserCart = updateUserCart;

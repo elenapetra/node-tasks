@@ -37,11 +37,11 @@ userRouter.use(auth_middleware_1.authMiddleware);
 productRouter.use(auth_middleware_1.authMiddleware);
 app.use(bodyParser.json());
 userRouter.get("/cart", CartController.getUserCart);
-userRouter.put("/cart", CartController.updateCart);
-userRouter.delete("/cart", CartController.deleteCart);
-userRouter.post("/cart/checkout", OrderController.createUserOrders);
+userRouter.put("/cart", CartController.updateUserCart);
+userRouter.delete("/cart", CartController.deleteUserCart);
+userRouter.post("/cart/checkout", OrderController.createUserOrder);
 productRouter.get("/products", ProductController.getAllProducts);
-productRouter.get("/products/:productId", ProductController.getProductById);
+productRouter.get("/products/:productId", ProductController.getProduct);
 app.use("/api/profile", userRouter);
 app.use("/api/", productRouter);
 app.listen(port, () => {

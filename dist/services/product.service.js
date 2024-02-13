@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductByIdService = exports.getAllProductsService = void 0;
+exports.getProductById = exports.getProducts = void 0;
 const product_repository_1 = require("../repositories/product.repository");
-const getAllProductsService = () => __awaiter(void 0, void 0, void 0, function* () {
+const getProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield (0, product_repository_1.getAllProducts)();
         return products;
@@ -21,10 +21,10 @@ const getAllProductsService = () => __awaiter(void 0, void 0, void 0, function* 
         return [];
     }
 });
-exports.getAllProductsService = getAllProductsService;
-const getProductByIdService = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getProducts = getProducts;
+const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield (0, product_repository_1.getProductById)(productId);
+        const product = yield (0, product_repository_1.getProductObjectById)(productId);
         return product;
     }
     catch (error) {
@@ -32,4 +32,4 @@ const getProductByIdService = (productId) => __awaiter(void 0, void 0, void 0, f
         return;
     }
 });
-exports.getProductByIdService = getProductByIdService;
+exports.getProductById = getProductById;
