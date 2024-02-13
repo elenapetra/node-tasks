@@ -24,18 +24,7 @@ const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             if (userCart) {
                 const responseData = {
                     data: {
-                        cart: {
-                            id: userCart._id,
-                            items: userCart.items.map((item) => ({
-                                product: {
-                                    id: item.product._id,
-                                    title: item.product.title,
-                                    description: item.product.description,
-                                    price: item.product.price,
-                                },
-                                count: item.count,
-                            })),
-                        },
+                        cart: userCart,
                         total: userCart.items.reduce((total, item) => total + item.product.price * item.count, 0),
                     },
                     error: null,

@@ -25,21 +25,25 @@ const updateCartService = (userId, itemToUpdate) => __awaiter(void 0, void 0, vo
             return;
         }
         const { product, count } = itemToUpdate;
-        const existingItemIndex = existingCart.items.findIndex((item) => item.product._id.equals(product._id));
-        if (existingItemIndex !== -1) {
-            // If the product already exists, update only the count
-            existingCart.items[existingItemIndex].count += count;
+        if (count === 0) {
+            existingCart.items = existingCart.items.filter((item) => !item.product._id.equals(product._id));
         }
         else {
-            const productDetails = yield (0, product_service_1.getProductByIdService)(product._id);
-            if (productDetails) {
-                existingCart.items.push({
-                    product: productDetails,
-                    count,
-                });
+            const existingItemIndex = existingCart.items.findIndex((item) => item.product._id.equals(product._id));
+            if (existingItemIndex !== -1) {
+                existingCart.items[existingItemIndex].count += count;
             }
             else {
-                console.error("Product not found in the database for updateItem:", itemToUpdate);
+                const productDetails = yield (0, product_service_1.getProductByIdService)(product._id);
+                if (productDetails) {
+                    existingCart.items.push({
+                        product: productDetails,
+                        count,
+                    });
+                }
+                else {
+                    console.error("Product not found in the database for updateItem:", itemToUpdate);
+                }
             }
         }
         yield (0, cart_repository_1.updateCart)(userId, { items: existingCart.items });

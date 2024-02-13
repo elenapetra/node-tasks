@@ -14,43 +14,34 @@ export const getUserCart = async (
 ): Promise<void> => {
   const userId = req.userId;
   try {
-    if (userId) {
-      const userCart = await getCartService(userId);
-      if (userCart) {
-        const responseData = {
-          data: {
-            cart: {
-              id: userCart._id,
-              items: userCart.items.map((item) => ({
-                product: {
-                  id: item.product._id,
-                  title: item.product.title,
-                  description: item.product.description,
-                  price: item.product.price,
-                },
-                count: item.count,
-              })),
-            },
-            total: userCart.items.reduce(
-              (total, item) => total + item.product.price * item.count,
-              0
-            ),
-          },
-          error: null,
-        };
-
-        res.status(200).json(responseData);
-      } else {
-        res
-          .status(404)
-          .json({ data: null, error: { message: "Cart not found." } });
-      }
-    } else {
+    if (!userId) {
       res.status(401).json({
         data: null,
         error: { message: "You must be an authorized user" },
       });
+      return;
     }
+    const userCart = await getCartService(userId);
+    if (!userCart) {
+      res
+        .status(404)
+        .json({ data: null, error: { message: "Cart not found." } });
+      return;
+    }
+    const total = userCart.items.reduce(
+      (total, item) => total + item.product.price * item.count,
+      0
+    );
+
+    const responseData = {
+      data: {
+        cart: userCart,
+        total: total,
+      },
+      error: null,
+    };
+
+    res.status(200).json(responseData);
   } catch (error) {
     res
       .status(500)
@@ -64,14 +55,15 @@ export const deleteCart = async (
 ): Promise<void> => {
   const userId = req.userId;
   try {
-    if (userId) {
-      await deleteCartService(userId);
-      res.status(200).json({ data: { success: true }, error: null });
-    } else {
-      res
-        .status(401)
-        .json({ data: null, error: { message: "User is not authorized" } });
+    if (!userId) {
+      res.status(401).json({
+        data: null,
+        error: { message: "User is not authorized" },
+      });
+      return;
     }
+    await deleteCartService(userId);
+    res.status(200).json({ data: { success: true }, error: null });
   } catch (error) {
     console.error("Error deleting cart:", error);
   }
@@ -122,19 +114,28 @@ export const updateCart = async (
       return;
     }
 
-    const fetchingProduct = await getProductById(productId);
+    const retrievedProduct = await getProductById(productId);
 
-    if (fetchingProduct) {
-      const itemToUpdate = {
-        product: fetchingProduct,
-        count: count,
-      };
-      await updateCartService(userId, itemToUpdate);
+    if (!retrievedProduct) {
+      res.status(404).json({
+        data: null,
+        error: {
+          message: "Product not found",
+        },
+      });
+      return;
     }
 
-    const currentProduct = userCart.items.find((item) => {
-      return item.product._id === productId;
-    });
+    const itemToUpdate = {
+      product: retrievedProduct,
+      count: count,
+    };
+
+    await updateCartService(userId, itemToUpdate);
+
+    const currentProduct = userCart.items.find(
+      (item) => item.product._id === productId
+    );
 
     if (currentProduct) {
       const data = {
