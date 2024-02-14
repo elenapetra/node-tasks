@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductObjectById = exports.getAllProducts = void 0;
+exports.getProductObject = exports.getAllProductsObjects = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const dataFilePath = "src/data/products.json";
-const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProductsObjects = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield promises_1.default.readFile(dataFilePath, "utf-8");
         return JSON.parse(data);
@@ -25,10 +25,10 @@ const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
         return [];
     }
 });
-exports.getAllProducts = getAllProducts;
-const getProductObjectById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield (0, exports.getAllProducts)();
+exports.getAllProductsObjects = getAllProductsObjects;
+const getProductObject = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield (0, exports.getAllProductsObjects)();
     const product = products.find((product) => product.id === productId);
     return product;
 });
-exports.getProductObjectById = getProductObjectById;
+exports.getProductObject = getProductObject;

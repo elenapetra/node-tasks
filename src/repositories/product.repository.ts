@@ -3,7 +3,7 @@ import fs from "fs/promises";
 
 const dataFilePath = "src/data/products.json";
 
-export const getAllProducts = async (): Promise<ProductEntity[]> => {
+export const getAllProductsObjects = async (): Promise<ProductEntity[]> => {
   try {
     const data = await fs.readFile(dataFilePath, "utf-8");
     return JSON.parse(data);
@@ -13,10 +13,10 @@ export const getAllProducts = async (): Promise<ProductEntity[]> => {
   }
 };
 
-export const getProductObjectById = async (
+export const getProductObject = async (
   productId: string
 ): Promise<ProductEntity | undefined> => {
-  const products = await getAllProducts();
+  const products = await getAllProductsObjects();
   const product = products.find(
     (product: ProductEntity) => product.id === productId
   );

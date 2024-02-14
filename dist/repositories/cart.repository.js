@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkoutCartObject = exports.deleteCartObject = exports.updateCartObject = exports.getCartObject = exports.getAllCarts = void 0;
+exports.getActiveCartObject = exports.deleteCartObject = exports.updateCartObject = exports.getCartObject = exports.getAllCarts = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const uuid = require("uuid");
 const dataFilePath = "src/data/carts.json";
@@ -71,9 +71,9 @@ const deleteCartObject = (userId) => __awaiter(void 0, void 0, void 0, function*
     yield promises_1.default.writeFile(dataFilePath, JSON.stringify(updatedCartList, null, 2), "utf-8");
 });
 exports.deleteCartObject = deleteCartObject;
-const checkoutCartObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getActiveCartObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const carts = yield (0, exports.getAllCarts)();
     const userCart = carts.find((cart) => cart.userId === userId && !cart.isDeleted);
     return userCart;
 });
-exports.checkoutCartObject = checkoutCartObject;
+exports.getActiveCartObject = getActiveCartObject;

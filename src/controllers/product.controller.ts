@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { getProducts, getProductById } from "../services/product.service";
+import { getProductsList, getProductById } from "../services/product.service";
 
-export const getAllProducts = async (
+export const getProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const products = await getProducts();
+  const products = await getProductsList();
   const responseBody = {
     data: { ...products },
     error: null,

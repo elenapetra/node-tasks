@@ -13,7 +13,7 @@ export const getAllUsers = async (): Promise<UserEntity[]> => {
   }
 };
 
-export const getUserObjectById = async (
+export const getUserObject = async (
   userId: string
 ): Promise<UserEntity | undefined> => {
   const users = await getAllUsers();

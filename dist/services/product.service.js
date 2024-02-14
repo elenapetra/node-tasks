@@ -9,11 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductById = exports.getProducts = void 0;
+exports.getProductById = exports.getProductsList = void 0;
 const product_repository_1 = require("../repositories/product.repository");
-const getProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+const getProductsList = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield (0, product_repository_1.getAllProducts)();
+        const products = yield (0, product_repository_1.getAllProductsObjects)();
         return products;
     }
     catch (error) {
@@ -21,10 +21,10 @@ const getProducts = () => __awaiter(void 0, void 0, void 0, function* () {
         return [];
     }
 });
-exports.getProducts = getProducts;
+exports.getProductsList = getProductsList;
 const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield (0, product_repository_1.getProductObjectById)(productId);
+        const product = yield (0, product_repository_1.getProductObject)(productId);
         return product;
     }
     catch (error) {

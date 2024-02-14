@@ -11,19 +11,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCart = exports.updateCart = exports.getCart = void 0;
 const cart_repository_1 = require("../repositories/cart.repository");
+const product_service_1 = require("./product.service");
 const getCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const userCart = yield (0, cart_repository_1.getCartObject)(userId);
     return userCart;
 });
 exports.getCart = getCart;
-const updateCart = (userId, updatedItems) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const existingCart = yield (0, cart_repository_1.getCartObject)(userId);
         if (!existingCart) {
             console.error("Cart not found for user:", userId);
             return;
         }
-        existingCart.items = updatedItems;
+        const { product, count } = itemToUpdate;
+        if (count === 0) {
+            return;
+        }
+        else {
+            const existingItemIndex = existingCart.items.findIndex((item) => item.product.id === product.id);
+            if (existingItemIndex !== -1) {
+                existingCart.items[existingItemIndex].count += count;
+            }
+            else {
+                const productDetails = yield (0, product_service_1.getProductById)(product.id);
+                if (productDetails) {
+                    existingCart.items.push({
+                        product: productDetails,
+                        count,
+                    });
+                }
+                else {
+                    console.error("Product not found in the database for updateItem:", itemToUpdate);
+                }
+            }
+        }
         yield (0, cart_repository_1.updateCartObject)(userId, { items: existingCart.items });
     }
     catch (error) {

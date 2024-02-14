@@ -1,9 +1,9 @@
 import { saveOrderObject } from "../repositories/order.repository";
 import { OrderEntity } from "../utils/types";
-import { checkoutCartObject } from "../repositories/cart.repository";
+import { getActiveCartObject } from "../repositories/cart.repository";
 
-export const checkoutOrder = async (userId: string) => {
-  const userCart = await checkoutCartObject(userId);
+export const createOrder = async (userId: string) => {
+  const userCart = await getActiveCartObject(userId);
   return userCart;
 };
 

@@ -24,7 +24,7 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
             req.userId = userId;
         }
         else {
-            const user = yield (0, user_repository_1.getUserObjectById)(userId);
+            const user = yield (0, user_repository_1.getUserObject)(userId);
             if (!(user && user.id === userId)) {
                 return res.status(401).json({
                     data: null,

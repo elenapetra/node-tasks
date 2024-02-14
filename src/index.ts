@@ -24,7 +24,7 @@ userRouter.delete("/cart", CartController.deleteUserCart);
 
 userRouter.post("/cart/checkout", OrderController.createUserOrder);
 
-productRouter.get("/products", ProductController.getAllProducts);
+productRouter.get("/products", ProductController.getProducts);
 
 productRouter.get("/products/:productId", ProductController.getProduct);
 

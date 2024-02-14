@@ -24,7 +24,7 @@ const createUserOrder = (req, res) => __awaiter(void 0, void 0, void 0, function
             });
             return;
         }
-        const userCart = yield (0, order_service_1.checkoutOrder)(userId);
+        const userCart = yield (0, order_service_1.createOrder)(userId);
         if (!userCart) {
             console.error("User cart was not found");
             return;

@@ -1,12 +1,12 @@
 import { ProductEntity } from "../utils/types";
 import {
-  getAllProducts,
-  getProductObjectById,
+  getAllProductsObjects,
+  getProductObject,
 } from "../repositories/product.repository";
 
-export const getProducts = async (): Promise<ProductEntity[]> => {
+export const getProductsList = async (): Promise<ProductEntity[]> => {
   try {
-    const products = await getAllProducts();
+    const products = await getAllProductsObjects();
     return products;
   } catch (error) {
     console.error("Error getting products:", error);
@@ -18,7 +18,7 @@ export const getProductById = async (
   productId: string
 ): Promise<ProductEntity | undefined> => {
   try {
-    const product = await getProductObjectById(productId);
+    const product = await getProductObject(productId);
     return product;
   } catch (error) {
     console.error("Error getting product:", error);

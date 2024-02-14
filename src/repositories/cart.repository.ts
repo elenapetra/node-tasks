@@ -72,7 +72,7 @@ export const deleteCartObject = async (userId: string): Promise<void> => {
   );
 };
 
-export const checkoutCartObject = async (
+export const getActiveCartObject = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   const carts = await getAllCarts();

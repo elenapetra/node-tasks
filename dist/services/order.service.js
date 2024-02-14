@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveOrder = exports.checkoutOrder = void 0;
+exports.saveOrder = exports.createOrder = void 0;
 const order_repository_1 = require("../repositories/order.repository");
 const cart_repository_1 = require("../repositories/cart.repository");
-const checkoutOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const userCart = yield (0, cart_repository_1.checkoutCartObject)(userId);
+const createOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const userCart = yield (0, cart_repository_1.getActiveCartObject)(userId);
     return userCart;
 });
-exports.checkoutOrder = checkoutOrder;
+exports.createOrder = createOrder;
 const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, order_repository_1.saveOrderObject)(order);

@@ -1,8 +1,9 @@
 import { Response } from "express";
 import { getCart, updateCart, deleteCart } from "../services/cart.service";
 import { CustomRequest } from "../middleware/auth.middleware";
-import { getProductObjectById } from "../repositories/product.repository";
+import { getProductObject } from "../repositories/product.repository";
 import Joi from "joi";
+import { CartItemEntity } from "../utils/types";
 
 export const getUserCart = async (
   req: CustomRequest,
@@ -111,38 +112,24 @@ export const updateUserCart = async (
       return;
     }
 
-    let updatedItems = [];
+    const retrievedProduct = await getProductObject(productId);
 
-    if (count === 0) {
-      updatedItems = userCart.items.filter(
-        (item) => item.product.id !== productId
-      );
-    } else {
-      updatedItems = userCart.items.map((item) => {
-        if (item.product.id === productId) {
-          return { ...item, count };
-        } else {
-          return item;
-        }
+    if (!retrievedProduct) {
+      res.status(404).json({
+        data: null,
+        error: {
+          message: "Product not found",
+        },
       });
+      return;
     }
 
-    if (!userCart.items.some((item) => item.product.id === productId)) {
-      const productDetails = await getProductObjectById(productId);
+    const itemToUpdate: CartItemEntity = {
+      product: retrievedProduct,
+      count: count,
+    };
 
-      if (!productDetails) {
-        res.status(400).json({
-          data: null,
-          error: { message: "Products are not valid" },
-        });
-        return;
-      }
-
-      updatedItems.push({ product: productDetails, count });
-    }
-
-    updatedItems = updatedItems.filter((item) => item.count > 0);
-    await updateCart(userId, updatedItems);
+    await updateCart(userId, itemToUpdate);
 
     const currentProduct = userCart.items.find(
       (item) => item.product.id === productId
@@ -161,7 +148,6 @@ export const updateUserCart = async (
         data,
         error: null,
       };
-
       res.status(200).json(responseBody);
     }
   } catch (error) {

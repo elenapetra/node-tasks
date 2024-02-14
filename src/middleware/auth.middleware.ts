@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { UserEntity } from "../utils/types";
-import { getUserObjectById } from "../repositories/user.repository";
+import { getUserObject } from "../repositories/user.repository";
 
 export interface CustomRequest extends Request {
   user?: UserEntity;
@@ -26,7 +26,7 @@ export const authMiddleware = async (
     if (userId === "admin") {
       req.userId = userId;
     } else {
-      const user = await getUserObjectById(userId);
+      const user = await getUserObject(userId);
 
       if (!(user && user.id === userId)) {
         return res.status(401).json({

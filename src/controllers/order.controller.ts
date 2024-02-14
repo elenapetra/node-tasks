@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { checkoutOrder } from "../services/order.service";
+import { createOrder } from "../services/order.service";
 import { saveOrderObject } from "../repositories/order.repository";
 import { CustomRequest } from "../middleware/auth.middleware";
 import { ORDER_STATUS } from "../utils/types";
@@ -21,7 +21,7 @@ export const createUserOrder = async (
       return;
     }
 
-    const userCart = await checkoutOrder(userId);
+    const userCart = await createOrder(userId);
 
     if (!userCart) {
       console.error("User cart was not found");
