@@ -9,21 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = void 0;
+exports.getUserObject = void 0;
 const user_model_1 = require("../models/schemas/user.model");
-const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield user_model_1.UserModel.findOne({ _id: userId });
-        if (!user) {
-            return undefined;
-        }
-        else {
+        if (user) {
             return user.toObject();
         }
     }
     catch (error) {
         console.error("Error getting user data:", error);
-        return undefined;
     }
 });
-exports.getUserById = getUserById;
+exports.getUserObject = getUserObject;

@@ -1,27 +1,22 @@
 import { OrderEntity } from "../utils/types";
-import fs from "fs/promises";
 import { OrderModel } from "../models/schemas/order.model";
 
-const dataFilePath = "src/data/orders.json";
-
-export const getAllOrders = async (): Promise<OrderEntity[]> => {
+export const getOrderObject = async (
+  userId: string
+): Promise<OrderEntity[]> => {
   try {
-    const data = await fs.readFile(dataFilePath, "utf-8");
-    return JSON.parse(data);
+    const order = await OrderModel.find({ userId });
+    return order;
   } catch (error) {
-    console.error("Error reading products data:", error);
+    console.error("Error fetching user orders from MongoDB:", error);
     return [];
   }
 };
 
-export const getUserOrder = async (userId: string): Promise<OrderEntity[]> => {
-  const orders = await getAllOrders();
-  const userOrders = orders.filter((order) => order._id.toString() === userId);
-  return userOrders;
-};
-
-export const saveOrder = async (order: OrderEntity): Promise<void> => {
-  const orders = await getAllOrders();
-  orders.push(order);
-  await fs.writeFile(dataFilePath, JSON.stringify(orders, null, 2), "utf-8");
+export const saveOrderObject = async (order: OrderEntity): Promise<void> => {
+  try {
+    await OrderModel.create(order);
+  } catch (error) {
+    console.error("Error saving order to MongoDB:", error);
+  }
 };

@@ -1,7 +1,7 @@
 import { CartEntity } from "../utils/types";
 import { CartModel } from "../models/schemas/cart.model";
 
-export const getCart = async (
+export const getCartObject = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   try {
@@ -34,25 +34,7 @@ export const getCart = async (
   }
 };
 
-// export const updateCart = async (
-//   userId: string,
-//   updatedCart: { items: CartEntity["items"] }
-// ): Promise<void> => {
-//   const carts = await getAllCarts();
-//   const updatedCartList = carts.map((cart: CartEntity) => {
-//     if (cart.userId === userId && !cart.isDeleted) {
-//       return { ...cart, items: updatedCart.items };
-//     }
-//     return cart;
-//   });
-//   await fs.writeFile(
-//     dataFilePath,
-//     JSON.stringify(updatedCartList, null, 2),
-//     "utf-8"
-//   );
-// };
-
-export const updateCart = async (
+export const updateCartObject = async (
   userId: string,
   updatedCart: { items: CartEntity["items"] }
 ): Promise<void> => {
@@ -66,13 +48,12 @@ export const updateCart = async (
       console.error("User's cart not found or is deleted.");
       return;
     }
-    console.log("Cart updated successfully: ", cartToUpdate);
   } catch (error) {
     console.error("Error updating cart data: ", error);
   }
 };
 
-export const deleteCart = async (userId: string): Promise<void> => {
+export const deleteCartObject = async (userId: string): Promise<void> => {
   try {
     const existingDeletedCart = await CartModel.findOne({
       userId: userId,
@@ -80,7 +61,6 @@ export const deleteCart = async (userId: string): Promise<void> => {
     });
     if (existingDeletedCart) {
       await CartModel.deleteOne({ _id: existingDeletedCart._id });
-      console.log("Existing deleted cart removed successfully");
     }
     const deletedCart = await CartModel.findOneAndUpdate(
       { userId: userId, isDeleted: false },
@@ -91,22 +71,12 @@ export const deleteCart = async (userId: string): Promise<void> => {
       console.error("User's cart not found or is already deleted.");
       return;
     }
-    console.log("Cart deleted successfully: ", deleteCart);
   } catch (error) {
     console.error("Error deleting cart data:", error);
   }
 };
 
-// export const checkoutCart = async (
-//   userId: string
-// ): Promise<CartEntity | undefined> => {
-//   const carts = await getAllCarts();
-//   const userCart = carts.find(
-//     (cart) => cart.userId === userId && !cart.isDeleted
-//   );
-//   return userCart;
-// };
-export const checkoutCart = async (
+export const getActiveCartObject = async (
   userId: string
 ): Promise<CartEntity | undefined> => {
   try {
@@ -115,10 +85,9 @@ export const checkoutCart = async (
       isDeleted: false,
     });
     if (!userCart) {
-      console.error("User's cart not found or is deleted.");
+      console.error("User's cart not found");
       return undefined;
     }
-    console.log("Cart checked out successfully:", userCart);
     return userCart.toObject();
   } catch (error) {
     console.error("Error checking out cart data:", error);

@@ -18,11 +18,11 @@ connectDB().then(() => {
   app.use(bodyParser.json());
 
   userRouter.get("/cart", CartController.getUserCart);
-  userRouter.put("/cart", CartController.updateCart);
-  userRouter.delete("/cart", CartController.deleteCart);
+  userRouter.put("/cart", CartController.updateUserCart);
+  userRouter.delete("/cart", CartController.deleteUserCart);
   userRouter.post("/cart/checkout", OrderController.createUserOrders);
-  productRouter.get("/products", ProductController.getAllProducts);
-  productRouter.get("/products/:productId", ProductController.getProductById);
+  productRouter.get("/products", ProductController.getProducts);
+  productRouter.get("/products/:productId", ProductController.getProduct);
 
   app.use("/api/profile", userRouter);
   app.use("/api/", productRouter);

@@ -1,11 +1,7 @@
-import { Request, Response } from "express";
-import {
-  getCartService,
-  updateCartService,
-  deleteCartService,
-} from "../services/cart.service";
+import { Response } from "express";
+import { getCart, updateCart, deleteCart } from "../services/cart.service";
 import { CustomRequest } from "../middleware/auth.middleware";
-import { getProductById } from "../repositories/product.repository";
+import { getProductObject } from "../repositories/product.repository";
 import Joi from "joi";
 
 export const getUserCart = async (
@@ -21,7 +17,7 @@ export const getUserCart = async (
       });
       return;
     }
-    const userCart = await getCartService(userId);
+    const userCart = await getCart(userId);
     if (!userCart) {
       res
         .status(404)
@@ -49,12 +45,12 @@ export const getUserCart = async (
   }
 };
 
-export const deleteCart = async (
+export const deleteUserCart = async (
   req: CustomRequest,
   res: Response
 ): Promise<void> => {
-  const userId = req.userId;
   try {
+    const userId = req.userId;
     if (!userId) {
       res.status(401).json({
         data: null,
@@ -62,14 +58,14 @@ export const deleteCart = async (
       });
       return;
     }
-    await deleteCartService(userId);
+    await deleteCart(userId);
     res.status(200).json({ data: { success: true }, error: null });
   } catch (error) {
     console.error("Error deleting cart:", error);
   }
 };
 
-export const updateCart = async (
+export const updateUserCart = async (
   req: CustomRequest,
   res: Response
 ): Promise<void> => {
@@ -86,8 +82,7 @@ export const updateCart = async (
       res.status(400).json({
         data: null,
         error: {
-          message: "Validation Error",
-          details: error.details.map((detail) => detail.message),
+          message: "Products are not valid",
         },
       });
       return;
@@ -101,7 +96,7 @@ export const updateCart = async (
       return;
     }
 
-    const userCart = await getCartService(userId);
+    const userCart = await getCart(userId);
     const { productId, count } = value;
 
     if (!userCart) {
@@ -114,7 +109,7 @@ export const updateCart = async (
       return;
     }
 
-    const retrievedProduct = await getProductById(productId);
+    const retrievedProduct = await getProductObject(productId);
 
     if (!retrievedProduct) {
       res.status(404).json({
@@ -131,11 +126,11 @@ export const updateCart = async (
       count: count,
     };
 
-    await updateCartService(userId, itemToUpdate);
+    await updateCart(userId, itemToUpdate);
 
-    const currentProduct = userCart.items.find(
-      (item) => item.product._id === productId
-    );
+    const currentProduct = userCart.items.find((item) => {
+      return item.product._id.equals(productId);
+    });
 
     if (currentProduct) {
       const data = {
@@ -143,7 +138,7 @@ export const updateCart = async (
           id: userCart._id,
           items: [currentProduct],
         },
-        total: count * currentProduct?.product.price,
+        total: count * currentProduct.product.price,
       };
 
       const responseBody = {

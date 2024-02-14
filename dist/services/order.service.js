@@ -9,21 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveOrderService = exports.checkoutOrderService = void 0;
+exports.saveOrder = exports.createOrder = void 0;
 const order_repository_1 = require("../repositories/order.repository");
 const cart_repository_1 = require("../repositories/cart.repository");
-const checkoutOrderService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const userCart = yield (0, cart_repository_1.checkoutCart)(userId);
-    return userCart;
-});
-exports.checkoutOrderService = checkoutOrderService;
-const saveOrderService = (order) => __awaiter(void 0, void 0, void 0, function* () {
+const createOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, order_repository_1.saveOrder)(order);
+        const userCart = yield (0, cart_repository_1.getActiveCartObject)(userId);
+        return userCart;
+    }
+    catch (error) {
+        console.error("Error creating order:", error);
+    }
+});
+exports.createOrder = createOrder;
+const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield (0, order_repository_1.saveOrderObject)(order);
     }
     catch (error) {
         console.error("Error saving order:", error);
-        throw new Error("Error saving order");
     }
 });
-exports.saveOrderService = saveOrderService;
+exports.saveOrder = saveOrder;

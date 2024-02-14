@@ -9,53 +9,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCartService = exports.updateCartService = exports.getCartService = void 0;
+exports.deleteCart = exports.updateCart = exports.getCart = void 0;
 const cart_repository_1 = require("../repositories/cart.repository");
 const product_service_1 = require("./product.service");
-const getCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const userCart = yield (0, cart_repository_1.getCart)(userId);
-    return userCart;
-});
-exports.getCartService = getCartService;
-const updateCartService = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+const getCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existingCart = yield (0, cart_repository_1.getCart)(userId);
+        const userCart = yield (0, cart_repository_1.getCartObject)(userId);
+        return userCart;
+    }
+    catch (error) {
+        console.error("Cart not found for user:", userId);
+    }
+});
+exports.getCart = getCart;
+const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const existingCart = yield (0, cart_repository_1.getCartObject)(userId);
         if (!existingCart) {
             console.error("Cart not found for user:", userId);
             return;
         }
         const { product, count } = itemToUpdate;
         if (count === 0) {
-            existingCart.items = existingCart.items.filter((item) => !item.product._id.equals(product._id));
+            return;
+        }
+        const existingItem = existingCart.items.find((item) => item.product._id.equals(product._id));
+        if (existingItem) {
+            existingItem.count += count;
         }
         else {
-            const existingItemIndex = existingCart.items.findIndex((item) => item.product._id.equals(product._id));
-            if (existingItemIndex !== -1) {
-                existingCart.items[existingItemIndex].count += count;
+            const productDetails = yield (0, product_service_1.getProductById)(product._id);
+            if (!productDetails) {
+                console.error("Product not found in the database for updateItem:", itemToUpdate);
+                return;
             }
-            else {
-                const productDetails = yield (0, product_service_1.getProductByIdService)(product._id);
-                if (productDetails) {
-                    existingCart.items.push({
-                        product: productDetails,
-                        count,
-                    });
-                }
-                else {
-                    console.error("Product not found in the database for updateItem:", itemToUpdate);
-                }
-            }
+            existingCart.items.push({
+                product: productDetails,
+                count,
+            });
         }
-        yield (0, cart_repository_1.updateCart)(userId, { items: existingCart.items });
+        yield (0, cart_repository_1.updateCartObject)(userId, { items: existingCart.items });
     }
     catch (error) {
         console.error("Error updating cart:", error);
-        throw new Error("Internal Server Error");
     }
 });
-exports.updateCartService = updateCartService;
-const deleteCartService = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const deletedCart = yield (0, cart_repository_1.deleteCart)(userId);
-    return deletedCart;
+exports.updateCart = updateCart;
+const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const deletedCart = yield (0, cart_repository_1.deleteCartObject)(userId);
+        return deletedCart;
+    }
+    catch (error) {
+        console.error("Error deleting cart:", error);
+    }
 });
-exports.deleteCartService = deleteCartService;
+exports.deleteCart = deleteCart;

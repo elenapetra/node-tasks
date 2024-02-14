@@ -8,33 +8,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveOrder = exports.getUserOrder = exports.getAllOrders = void 0;
-const promises_1 = __importDefault(require("fs/promises"));
-const dataFilePath = "src/data/orders.json";
-const getAllOrders = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.saveOrderObject = exports.getOrderObject = void 0;
+const order_model_1 = require("../models/schemas/order.model");
+const getOrderObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield promises_1.default.readFile(dataFilePath, "utf-8");
-        return JSON.parse(data);
+        const order = yield order_model_1.OrderModel.find({ userId });
+        return order;
     }
     catch (error) {
-        console.error("Error reading products data:", error);
+        console.error("Error fetching user orders from MongoDB:", error);
         return [];
     }
 });
-exports.getAllOrders = getAllOrders;
-const getUserOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const orders = yield (0, exports.getAllOrders)();
-    const userOrders = orders.filter((order) => order._id.toString() === userId);
-    return userOrders;
+exports.getOrderObject = getOrderObject;
+const saveOrderObject = (order) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield order_model_1.OrderModel.create(order);
+    }
+    catch (error) {
+        console.error("Error saving order to MongoDB:", error);
+    }
 });
-exports.getUserOrder = getUserOrder;
-const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
-    const orders = yield (0, exports.getAllOrders)();
-    orders.push(order);
-    yield promises_1.default.writeFile(dataFilePath, JSON.stringify(orders, null, 2), "utf-8");
-});
-exports.saveOrder = saveOrder;
+exports.saveOrderObject = saveOrderObject;

@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductById = exports.getAllProducts = void 0;
+exports.getProductObject = exports.getAllProductsObjects = void 0;
 const product_model_1 = require("../models/schemas/product.model");
-const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
+const getAllProductsObjects = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield product_model_1.ProductModel.find().exec();
     }
@@ -20,8 +20,8 @@ const getAllProducts = () => __awaiter(void 0, void 0, void 0, function* () {
         return [];
     }
 });
-exports.getAllProducts = getAllProducts;
-const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getAllProductsObjects = getAllProductsObjects;
+const getProductObject = (productId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield product_model_1.ProductModel.findById(productId).exec();
         return product ? product.toJSON() : undefined;
@@ -31,4 +31,4 @@ const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function
         return undefined;
     }
 });
-exports.getProductById = getProductById;
+exports.getProductObject = getProductObject;

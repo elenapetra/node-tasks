@@ -1,17 +1,20 @@
-import { saveOrder } from "../repositories/order.repository";
+import { saveOrderObject } from "../repositories/order.repository";
 import { OrderEntity } from "../utils/types";
-import { checkoutCart } from "../repositories/cart.repository";
+import { getActiveCartObject } from "../repositories/cart.repository";
 
-export const checkoutOrderService = async (userId: string) => {
-  const userCart = await checkoutCart(userId);
-  return userCart;
+export const createOrder = async (userId: string) => {
+  try {
+    const userCart = await getActiveCartObject(userId);
+    return userCart;
+  } catch (error) {
+    console.error("Error creating order:", error);
+  }
 };
 
-export const saveOrderService = async (order: OrderEntity) => {
+export const saveOrder = async (order: OrderEntity) => {
   try {
-    await saveOrder(order);
+    await saveOrderObject(order);
   } catch (error) {
     console.error("Error saving order:", error);
-    throw new Error("Error saving order");
   }
 };

@@ -1,36 +1,41 @@
 import { Request, Response } from "express";
-import {
-  getAllProductsService,
-  getProductByIdService,
-} from "../services/product.service";
+import { getProductsList, getProductById } from "../services/product.service";
 
-export const getAllProducts = async (
+export const getProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const products = await getAllProductsService();
-  const responseBody = {
-    data: Object.values(products),
-    error: null,
-  };
-  res.json(responseBody);
+  try {
+    const products = await getProductsList();
+    const responseBody = {
+      data: Object.values(products),
+      error: null,
+    };
+    res.json(responseBody);
+  } catch (error) {
+    console.error("Error getting products: ", error);
+  }
 };
 
-export const getProductById = async (
+export const getProduct = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const productId = req.params.productId;
-  const product = await getProductByIdService(productId);
-  if (!product) {
-    res
-      .status(404)
-      .json({ data: null, error: { message: "No product with such id" } });
-    return;
+  try {
+    const productId = req.params.productId;
+    const product = await getProductById(productId);
+    if (!product) {
+      res
+        .status(404)
+        .json({ data: null, error: { message: "No product with such id" } });
+      return;
+    }
+    const responseBody = {
+      data: { ...product },
+      error: null,
+    };
+    res.json(responseBody);
+  } catch (error) {
+    console.error("Error getting product: ", error);
   }
-  const responseBody = {
-    data: { ...product },
-    error: null,
-  };
-  res.json(responseBody);
 };
