@@ -1,4 +1,7 @@
-import { authenticateMiddleware } from "./middleware/auth.middleware";
+import {
+  authenticateMiddleware,
+  authorizeMiddleware,
+} from "./middleware/auth.middleware";
 import * as CartController from "./controllers/cart.controller";
 import * as ProductController from "./controllers/product.controller";
 import * as OrderController from "./controllers/order.controller";
@@ -18,16 +21,34 @@ connectDB().then(() => {
 
   app.use(bodyParser.json());
 
-  // userRouter.use(authMiddleware);
-  productRouter.use(authenticateMiddleware);
+  userRouter.get("/cart", authenticateMiddleware, CartController.getUserCart);
+  userRouter.put(
+    "/cart",
+    authenticateMiddleware,
+    CartController.updateUserCart
+  );
+  userRouter.delete(
+    "/cart",
+    authenticateMiddleware,
+    authorizeMiddleware,
+    CartController.deleteUserCart
+  );
+  userRouter.post(
+    "/cart/checkout",
+    authenticateMiddleware,
+    OrderController.createUserOrders
+  );
 
-  userRouter.get("/cart", CartController.getUserCart);
-  userRouter.put("/cart", CartController.updateUserCart);
-  userRouter.delete("/cart", CartController.deleteUserCart);
-  userRouter.post("/cart/checkout", OrderController.createUserOrders);
-
-  productRouter.get("/products", ProductController.getProducts);
-  productRouter.get("/products/:productId", ProductController.getProduct);
+  productRouter.get(
+    "/products",
+    authenticateMiddleware,
+    ProductController.getProducts
+  );
+  productRouter.get(
+    "/products/:productId",
+    authenticateMiddleware,
+    ProductController.getProduct
+  );
 
   authRouter.post("/register", UserController.registerUser);
   authRouter.post("/login", UserController.loginUser);

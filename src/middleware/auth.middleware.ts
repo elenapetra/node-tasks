@@ -35,7 +35,10 @@ export const authenticateMiddleware = async (
         return;
       }
 
+      req.user = user;
       req.userId = userId;
+      req.userRole = user.role;
+
       next();
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
@@ -53,6 +56,31 @@ export const authenticateMiddleware = async (
     }
   } catch (error) {
     console.error("Error in authenticateMiddleware:", error);
+    res.status(500).json({
+      data: null,
+      error: { message: "Internal Server Error" },
+    });
+  }
+};
+
+export const authorizeMiddleware = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userRole = req.userRole;
+    console.log(userRole);
+    if (userRole !== "admin") {
+      res.status(403).json({
+        data: null,
+        error: { message: "Forbidden: Only admin users are allowed" },
+      });
+      return;
+    }
+    next();
+  } catch (error) {
+    console.error("Error in authorizeMiddleware:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal Server Error" },

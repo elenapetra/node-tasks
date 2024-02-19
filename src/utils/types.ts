@@ -49,4 +49,5 @@ export interface OrderEntity {
 export interface CustomRequest extends Request {
   user?: UserEntity;
   userId?: string;
+  userRole?: string;
 }

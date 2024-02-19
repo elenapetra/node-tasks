@@ -13,41 +13,6 @@ exports.authenticateMiddleware = void 0;
 const user_repository_1 = require("../repositories/user.repository");
 const jwt = require("jsonwebtoken");
 const jsonwebtoken_1 = require("jsonwebtoken");
-// export const authMiddleware = async (
-//   req: CustomRequest,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<any> => {
-//   console.log("authMiddleware applied");
-//   const userId = req.headers["x-user-id"];
-//   if (typeof userId !== "string") {
-//     return res.status(403).json({
-//       data: null,
-//       error: { message: "You must be an authorized user." },
-//     });
-//   }
-//   try {
-//     if (userId === "admin") {
-//       req.userId = userId;
-//     } else {
-//       const user = await getUserObject(userId);
-//       if (!user || user._id.toString() !== userId) {
-//         return res.status(401).json({
-//           data: null,
-//           error: { message: "User is not authorized." },
-//         });
-//       }
-//       req.userId = userId;
-//     }
-//   } catch (error) {
-//     console.error("Error fetching user:", error);
-//     return res.status(500).json({
-//       data: null,
-//       error: { message: "Internal Server Error" },
-//     });
-//   }
-//   next();
-// };
 const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authHeader = req.headers["authorization"];
@@ -59,7 +24,6 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
             return;
         }
         const token = authHeader.split(" ")[1];
-        console.log(token);
         try {
             const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
             const userId = decodedToken.userId;
@@ -76,7 +40,6 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
         }
         catch (error) {
             if (error instanceof jsonwebtoken_1.JsonWebTokenError) {
-                // Handle invalid token error
                 res.status(401).json({
                     data: null,
                     error: { message: "User is not authorized" },
@@ -90,7 +53,6 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
                 });
             }
         }
-        next();
     }
     catch (error) {
         console.error("Error in authenticateMiddleware:", error);
