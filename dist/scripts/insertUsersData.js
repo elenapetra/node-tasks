@@ -8,7 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
-const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.createUser = createUser;
+const user_model_1 = require("../models/schemas/user.model");
+const db_1 = __importDefault(require("../db"));
+const usersData = require("../data/users.json");
+const insertUsersData = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield user_model_1.UserModel.insertMany(usersData);
+    }
+    catch (error) {
+        console.error("Error inserting product data:", error);
+    }
+});
+(0, db_1.default)().then(() => insertUsersData());

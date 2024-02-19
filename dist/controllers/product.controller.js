@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProduct = exports.getProducts = void 0;
 const product_service_1 = require("../services/product.service");
-const getProducts = (res) => __awaiter(void 0, void 0, void 0, function* () {
+const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield (0, product_service_1.getProductsList)();
         const responseBody = {

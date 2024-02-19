@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserObject = void 0;
+exports.findUserByEmail = exports.saveUserToDB = exports.getUserObject = void 0;
 const user_model_1 = require("../models/schemas/user.model");
 const getUserObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -23,3 +23,26 @@ const getUserObject = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserObject = getUserObject;
+const saveUserToDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newUser = new user_model_1.UserModel(user);
+        const saveUser = yield newUser.save();
+        return saveUser.toObject();
+    }
+    catch (error) {
+        console.error("Error saving user to the database:", error);
+        return undefined;
+    }
+});
+exports.saveUserToDB = saveUserToDB;
+const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.UserModel.findOne({ email }).exec();
+        return user ? user.toObject() : null;
+    }
+    catch (error) {
+        console.error("Error finding user by email:", error);
+        return null;
+    }
+});
+exports.findUserByEmail = findUserByEmail;

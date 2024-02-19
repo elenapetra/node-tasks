@@ -80,8 +80,7 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
             res.status(400).json({
                 data: null,
                 error: {
-                    message: "Validation Error",
-                    details: error.details.map((detail) => detail.message),
+                    message: "Products are not valid",
                 },
             });
             return;

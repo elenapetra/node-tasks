@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { createOrder, saveOrder } from "../services/order.service";
-import { CustomRequest } from "../middleware/auth.middleware";
+import { CustomRequest } from "../utils/types";
 import { ORDER_STATUS } from "../utils/types";
 import { Types } from "mongoose";
 

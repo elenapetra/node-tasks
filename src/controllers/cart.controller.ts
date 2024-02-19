@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { getCart, updateCart, deleteCart } from "../services/cart.service";
-import { CustomRequest } from "../middleware/auth.middleware";
+import { CustomRequest } from "../utils/types";
 import { getProductObject } from "../repositories/product.repository";
 import Joi from "joi";
 

@@ -9,38 +9,95 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authMiddleware = void 0;
+exports.authenticateMiddleware = void 0;
 const user_repository_1 = require("../repositories/user.repository");
-const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.headers["x-user-id"];
-    if (typeof userId !== "string") {
-        return res.status(403).json({
-            data: null,
-            error: { message: "You must be an authorized user." },
-        });
-    }
+const jwt = require("jsonwebtoken");
+const jsonwebtoken_1 = require("jsonwebtoken");
+// export const authMiddleware = async (
+//   req: CustomRequest,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<any> => {
+//   console.log("authMiddleware applied");
+//   const userId = req.headers["x-user-id"];
+//   if (typeof userId !== "string") {
+//     return res.status(403).json({
+//       data: null,
+//       error: { message: "You must be an authorized user." },
+//     });
+//   }
+//   try {
+//     if (userId === "admin") {
+//       req.userId = userId;
+//     } else {
+//       const user = await getUserObject(userId);
+//       if (!user || user._id.toString() !== userId) {
+//         return res.status(401).json({
+//           data: null,
+//           error: { message: "User is not authorized." },
+//         });
+//       }
+//       req.userId = userId;
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//     return res.status(500).json({
+//       data: null,
+//       error: { message: "Internal Server Error" },
+//     });
+//   }
+//   next();
+// };
+const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (userId === "admin") {
-            req.userId = userId;
+        const authHeader = req.headers["authorization"];
+        if (!authHeader) {
+            res.status(403).json({
+                data: null,
+                error: { message: "You must be an authorized user" },
+            });
+            return;
         }
-        else {
+        const token = authHeader.split(" ")[1];
+        console.log(token);
+        try {
+            const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`);
+            const userId = decodedToken.userId;
             const user = yield (0, user_repository_1.getUserObject)(userId);
-            if (!user || user._id.toString() !== userId) {
-                return res.status(401).json({
+            if (!user) {
+                res.status(403).json({
                     data: null,
-                    error: { message: "User is not authorized." },
+                    error: { message: "User is not authorized" },
                 });
+                return;
             }
             req.userId = userId;
+            next();
         }
+        catch (error) {
+            if (error instanceof jsonwebtoken_1.JsonWebTokenError) {
+                // Handle invalid token error
+                res.status(401).json({
+                    data: null,
+                    error: { message: "User is not authorized" },
+                });
+            }
+            else {
+                console.error("Error in authenticateMiddleware:", error);
+                res.status(500).json({
+                    data: null,
+                    error: { message: "Internal Server Error" },
+                });
+            }
+        }
+        next();
     }
     catch (error) {
-        console.error("Error fetching user:", error);
-        return res.status(500).json({
+        console.error("Error in authenticateMiddleware:", error);
+        res.status(500).json({
             data: null,
             error: { message: "Internal Server Error" },
         });
     }
-    next();
 });
-exports.authMiddleware = authMiddleware;
+exports.authenticateMiddleware = authenticateMiddleware;

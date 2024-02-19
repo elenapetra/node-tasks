@@ -1,4 +1,5 @@
 import { Types, ObjectId } from "mongoose";
+import { Request } from "express";
 
 export interface ProductEntity {
   _id: Types.ObjectId;
@@ -8,6 +9,9 @@ export interface ProductEntity {
 }
 export interface UserEntity {
   _id: Types.ObjectId;
+  email: string;
+  password: string;
+  role: string;
 }
 export interface CartItemEntity {
   product: ProductEntity;
@@ -40,4 +44,9 @@ export interface OrderEntity {
   comments: string;
   status: ORDER_STATUS;
   total: number;
+}
+
+export interface CustomRequest extends Request {
+  user?: UserEntity;
+  userId?: string;
 }
