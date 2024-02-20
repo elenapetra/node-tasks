@@ -32,10 +32,6 @@ export const updateCart = async (
 
     const { product, count } = itemToUpdate;
 
-    if (count === 0) {
-      return;
-    }
-
     const existingItem = existingCart.items.find((item) =>
       item.product._id.equals(product._id)
     );

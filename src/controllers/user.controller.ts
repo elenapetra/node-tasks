@@ -1,7 +1,7 @@
 import { CustomRequest } from "../utils/types";
 import { Response } from "express";
-import { isValidEmail } from "../utils/emailValidation";
 import { saveUserToDB, findUserByEmail } from "../repositories/user.repository";
+import { registrationSchema, loginSchema } from "../utils/bodyValidation";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -10,31 +10,17 @@ export const registerUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, password, role } = req.body;
+    const { error, value } = registrationSchema.validate(req.body);
 
-    if (!email) {
+    if (error) {
       res.status(400).json({
         data: null,
-        error: { message: "Email is required" },
+        error: { message: error.details[0].message },
       });
-    } else if (!password) {
-      res.status(400).json({
-        data: null,
-        error: { message: "Password is required" },
-      });
-    } else if (!role) {
-      res.status(400).json({
-        data: null,
-        error: { message: "Role is required" },
-      });
-    } else if (!isValidEmail(email)) {
-      res.status(400).json({
-        data: null,
-        error: {
-          message: "Email is not valid",
-        },
-      });
+      return;
     }
+
+    const { email, password, role } = value;
 
     const existingUser = await findUserByEmail(email);
 
@@ -45,6 +31,7 @@ export const registerUser = async (
           message: "User with this email already exists. Please Login",
         },
       });
+      return;
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = { email, password: hashedPassword, role };
@@ -83,21 +70,23 @@ export const loginUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { error, value } = loginSchema.validate(req.body);
+
+    if (error) {
       res.status(400).json({
         data: null,
-        error: { message: "Email and password are required" },
+        error: { message: error.details[0].message },
       });
       return;
     }
 
+    const { email, password } = value;
     const user = await findUserByEmail(email);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       res.status(401).json({
         data: null,
-        error: { message: "Invalid email or password" },
+        error: { message: "No user with such email or password" },
       });
       return;
     }

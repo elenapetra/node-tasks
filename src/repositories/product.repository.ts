@@ -15,6 +15,7 @@ export const getProductObject = async (
 ): Promise<ProductEntity | undefined> => {
   try {
     const product = await ProductModel.findById(productId).exec();
+
     return product ? product.toJSON() : undefined;
   } catch (error) {
     console.error("Error fetching product by ID from MongoDB:", error);

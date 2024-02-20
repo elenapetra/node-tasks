@@ -2,7 +2,10 @@ import { Response } from "express";
 import { getCart, updateCart, deleteCart } from "../services/cart.service";
 import { CustomRequest } from "../utils/types";
 import { getProductObject } from "../repositories/product.repository";
-import Joi from "joi";
+import { orderSchema } from "../utils/bodyValidation";
+import { getProductsList } from "../services/product.service";
+import { getCartObject } from "../repositories/cart.repository";
+const mongoose = require("mongoose");
 
 export const getUserCart = async (
   req: CustomRequest,
@@ -72,17 +75,13 @@ export const updateUserCart = async (
   try {
     const userId = req.userId;
 
-    const orderSchema = Joi.object({
-      productId: Joi.string().required(),
-      count: Joi.number().integer().min(0).required(),
-    });
     const { error, value } = orderSchema.validate(req.body);
 
     if (error) {
       res.status(400).json({
         data: null,
         error: {
-          message: "Products are not valid",
+          message: "Product is not valid",
         },
       });
       return;
@@ -110,7 +109,6 @@ export const updateUserCart = async (
     }
 
     const retrievedProduct = await getProductObject(productId);
-
     if (!retrievedProduct) {
       res.status(404).json({
         data: null,
@@ -128,25 +126,55 @@ export const updateUserCart = async (
 
     await updateCart(userId, itemToUpdate);
 
-    const currentProduct = userCart.items.find((item) => {
-      return item.product._id.equals(productId);
+    const updatedUserCart = await getCart(userId);
+
+    if (!updatedUserCart) {
+      res.status(500).json({
+        data: null,
+        error: {
+          message: "Failed to update user cart",
+        },
+      });
+      return;
+    }
+
+    const currentProduct = updatedUserCart.items.find((item) => {
+      return item.product._id.toString() === productId;
     });
 
-    if (currentProduct) {
-      const data = {
-        cart: {
-          id: userCart._id,
-          items: [currentProduct],
+    if (!currentProduct) {
+      res.status(404).json({
+        data: null,
+        error: {
+          message: "Product not found in the updated cart",
         },
-        total: count * currentProduct.product.price,
-      };
-
-      const responseBody = {
-        data,
-        error: null,
-      };
-      res.status(200).json(responseBody);
+      });
+      return;
     }
+
+    const data = {
+      cart: {
+        id: userCart._id,
+        items: [
+          {
+            product: {
+              id: currentProduct.product._id.toString(),
+              title: currentProduct.product.title,
+              description: currentProduct.product.description,
+              price: currentProduct.product.price,
+            },
+            count: count,
+          },
+        ],
+      },
+      total: count * currentProduct.product.price,
+    };
+
+    const responseBody = {
+      data,
+      error: null,
+    };
+    res.status(200).json(responseBody);
   } catch (error) {
     console.error("Error updating cart:", error);
     res.status(500).json({

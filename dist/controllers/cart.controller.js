@@ -8,14 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserCart = exports.deleteUserCart = exports.getUserCart = void 0;
 const cart_service_1 = require("../services/cart.service");
 const product_repository_1 = require("../repositories/product.repository");
-const joi_1 = __importDefault(require("joi"));
+const bodyValidation_1 = require("../utils/bodyValidation");
+const mongoose = require("mongoose");
 const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     try {
@@ -71,16 +69,12 @@ exports.deleteUserCart = deleteUserCart;
 const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
-        const orderSchema = joi_1.default.object({
-            productId: joi_1.default.string().required(),
-            count: joi_1.default.number().integer().min(0).required(),
-        });
-        const { error, value } = orderSchema.validate(req.body);
+        const { error, value } = bodyValidation_1.orderSchema.validate(req.body);
         if (error) {
             res.status(400).json({
                 data: null,
                 error: {
-                    message: "Products are not valid",
+                    message: "Product is not valid",
                 },
             });
             return;
@@ -118,23 +112,50 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
             count: count,
         };
         yield (0, cart_service_1.updateCart)(userId, itemToUpdate);
-        const currentProduct = userCart.items.find((item) => {
-            return item.product._id.equals(productId);
-        });
-        if (currentProduct) {
-            const data = {
-                cart: {
-                    id: userCart._id,
-                    items: [currentProduct],
+        const updatedUserCart = yield (0, cart_service_1.getCart)(userId);
+        if (!updatedUserCart) {
+            res.status(500).json({
+                data: null,
+                error: {
+                    message: "Failed to update user cart",
                 },
-                total: count * currentProduct.product.price,
-            };
-            const responseBody = {
-                data,
-                error: null,
-            };
-            res.status(200).json(responseBody);
+            });
+            return;
         }
+        const currentProduct = updatedUserCart.items.find((item) => {
+            return item.product._id.toString() === productId;
+        });
+        if (!currentProduct) {
+            res.status(404).json({
+                data: null,
+                error: {
+                    message: "Product not found in the updated cart",
+                },
+            });
+            return;
+        }
+        const data = {
+            cart: {
+                id: userCart._id,
+                items: [
+                    {
+                        product: {
+                            id: currentProduct.product._id.toString(),
+                            title: currentProduct.product.title,
+                            description: currentProduct.product.description,
+                            price: currentProduct.product.price,
+                        },
+                        count: currentProduct.count,
+                    },
+                ],
+            },
+            total: count * currentProduct.product.price,
+        };
+        const responseBody = {
+            data,
+            error: null,
+        };
+        res.status(200).json(responseBody);
     }
     catch (error) {
         console.error("Error updating cart:", error);

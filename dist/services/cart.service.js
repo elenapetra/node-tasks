@@ -30,9 +30,6 @@ const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, f
             return;
         }
         const { product, count } = itemToUpdate;
-        if (count === 0) {
-            return;
-        }
         const existingItem = existingCart.items.find((item) => item.product._id.equals(product._id));
         if (existingItem) {
             existingItem.count += count;

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateMiddleware = void 0;
+exports.authorizeMiddleware = exports.authenticateMiddleware = void 0;
 const user_repository_1 = require("../repositories/user.repository");
 const jwt = require("jsonwebtoken");
 const jsonwebtoken_1 = require("jsonwebtoken");
@@ -35,7 +35,9 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
                 });
                 return;
             }
+            req.user = user;
             req.userId = userId;
+            req.userRole = user.role;
             next();
         }
         catch (error) {
@@ -63,3 +65,24 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
     }
 });
 exports.authenticateMiddleware = authenticateMiddleware;
+const authorizeMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userRole = req.userRole;
+        if (userRole !== "admin") {
+            res.status(403).json({
+                data: null,
+                error: { message: "Forbidden: Only admin users are allowed" },
+            });
+            return;
+        }
+        next();
+    }
+    catch (error) {
+        console.error("Error in authorizeMiddleware:", error);
+        res.status(500).json({
+            data: null,
+            error: { message: "Internal Server Error" },
+        });
+    }
+});
+exports.authorizeMiddleware = authorizeMiddleware;

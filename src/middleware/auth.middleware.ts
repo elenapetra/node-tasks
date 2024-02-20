@@ -70,7 +70,7 @@ export const authorizeMiddleware = async (
 ): Promise<void> => {
   try {
     const userRole = req.userRole;
-    console.log(userRole);
+
     if (userRole !== "admin") {
       res.status(403).json({
         data: null,

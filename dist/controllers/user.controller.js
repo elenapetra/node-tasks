@@ -10,39 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.registerUser = void 0;
-const emailValidation_1 = require("../utils/emailValidation");
 const user_repository_1 = require("../repositories/user.repository");
+const bodyValidation_1 = require("../utils/bodyValidation");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password, role } = req.body;
-        if (!email) {
+        const { error, value } = bodyValidation_1.registrationSchema.validate(req.body);
+        if (error) {
             res.status(400).json({
                 data: null,
-                error: { message: "Email is required" },
+                error: { message: error.details[0].message },
             });
+            return;
         }
-        else if (!password) {
-            res.status(400).json({
-                data: null,
-                error: { message: "Password is required" },
-            });
-        }
-        else if (!role) {
-            res.status(400).json({
-                data: null,
-                error: { message: "Role is required" },
-            });
-        }
-        else if (!(0, emailValidation_1.isValidEmail)(email)) {
-            res.status(400).json({
-                data: null,
-                error: {
-                    message: "Email is not valid",
-                },
-            });
-        }
+        const { email, password, role } = value;
         const existingUser = yield (0, user_repository_1.findUserByEmail)(email);
         if (existingUser) {
             res.status(409).json({
@@ -51,6 +33,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     message: "User with this email already exists. Please Login",
                 },
             });
+            return;
         }
         const hashedPassword = yield bcrypt.hash(password, 10);
         const user = { email, password: hashedPassword, role };
@@ -84,19 +67,20 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerUser = registerUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
-        if (!email || !password) {
+        const { error, value } = bodyValidation_1.loginSchema.validate(req.body);
+        if (error) {
             res.status(400).json({
                 data: null,
-                error: { message: "Email and password are required" },
+                error: { message: error.details[0].message },
             });
             return;
         }
+        const { email, password } = value;
         const user = yield (0, user_repository_1.findUserByEmail)(email);
         if (!user || !(yield bcrypt.compare(password, user.password))) {
             res.status(401).json({
                 data: null,
-                error: { message: "Invalid email or password" },
+                error: { message: "No user with such email or password" },
             });
             return;
         }
