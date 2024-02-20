@@ -145,7 +145,7 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
                             description: currentProduct.product.description,
                             price: currentProduct.product.price,
                         },
-                        count: currentProduct.count,
+                        count: count,
                     },
                 ],
             },
