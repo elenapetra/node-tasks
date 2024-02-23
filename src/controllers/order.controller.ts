@@ -3,6 +3,7 @@ import { createOrder, saveOrder } from "../services/order.service";
 import { CustomRequest } from "../utils/types";
 import { ORDER_STATUS } from "../utils/types";
 import { Types } from "mongoose";
+import { deleteCart } from "../services/cart.service";
 
 export const createUserOrders = async (
   req: CustomRequest,
@@ -42,6 +43,7 @@ export const createUserOrders = async (
       ),
     };
     await saveOrder(userOrder);
+    await deleteCart(userId);
     const responseBody = {
       data: { userOrder },
       error: null,
