@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getActiveCartObject = exports.deleteCartObject = exports.updateCartObject = exports.getCartObject = void 0;
 const cart_model_1 = require("../models/schemas/cart.model");
+const logger_1 = require("../utils/logger");
 const getCartObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let userCart = yield cart_model_1.CartModel.findOne({
@@ -33,7 +34,7 @@ const getCartObject = (userId) => __awaiter(void 0, void 0, void 0, function* ()
         return userCart.toObject();
     }
     catch (error) {
-        console.error("Error getting cart data:", error);
+        logger_1.logger.error("Error getting cart data:", error);
         return undefined;
     }
 });
@@ -42,12 +43,12 @@ const updateCartObject = (userId, updatedCart) => __awaiter(void 0, void 0, void
     try {
         const cartToUpdate = yield cart_model_1.CartModel.findOneAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: updatedCart.items } }, { new: true });
         if (!cartToUpdate) {
-            console.error("User's cart not found or is deleted.");
+            logger_1.logger.error("User's cart not found or is deleted.");
             return;
         }
     }
     catch (error) {
-        console.error("Error updating cart data: ", error);
+        logger_1.logger.error("Error updating cart data: ", error);
     }
 });
 exports.updateCartObject = updateCartObject;
@@ -62,12 +63,12 @@ const deleteCartObject = (userId) => __awaiter(void 0, void 0, void 0, function*
         }
         const deletedCart = yield cart_model_1.CartModel.findOneAndUpdate({ userId: userId, isDeleted: false }, { $set: { items: [], isDeleted: true } }, { new: true });
         if (!deletedCart) {
-            console.error("User's cart not found or is already deleted.");
+            logger_1.logger.error("User's cart not found or is already deleted.");
             return;
         }
     }
     catch (error) {
-        console.error("Error deleting cart data:", error);
+        logger_1.logger.error("Error deleting cart data:", error);
     }
 });
 exports.deleteCartObject = deleteCartObject;
@@ -78,13 +79,13 @@ const getActiveCartObject = (userId) => __awaiter(void 0, void 0, void 0, functi
             isDeleted: false,
         });
         if (!userCart) {
-            console.error("User's cart not found");
+            logger_1.logger.error("User's cart not found");
             return undefined;
         }
         return userCart.toObject();
     }
     catch (error) {
-        console.error("Error checking out cart data:", error);
+        logger_1.logger.error("Error checking out cart data:", error);
         return undefined;
     }
 });

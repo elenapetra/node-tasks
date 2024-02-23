@@ -3,9 +3,7 @@ import { getCart, updateCart, deleteCart } from "../services/cart.service";
 import { CustomRequest } from "../utils/types";
 import { getProductObject } from "../repositories/product.repository";
 import { orderSchema } from "../utils/bodyValidation";
-import { getProductsList } from "../services/product.service";
-import { getCartObject } from "../repositories/cart.repository";
-const mongoose = require("mongoose");
+import { logger } from "../utils/logger";
 
 export const getUserCart = async (
   req: CustomRequest,
@@ -64,7 +62,7 @@ export const deleteUserCart = async (
     await deleteCart(userId);
     res.status(200).json({ data: { success: true }, error: null });
   } catch (error) {
-    console.error("Error deleting cart:", error);
+    logger.error("Error deleting cart:", error);
   }
 };
 
@@ -176,7 +174,7 @@ export const updateUserCart = async (
     };
     res.status(200).json(responseBody);
   } catch (error) {
-    console.error("Error updating cart:", error);
+    logger.error("Error updating cart:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal Server Error" },

@@ -15,12 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const product_model_1 = require("../models/schemas/product.model");
 const db_1 = __importDefault(require("../db"));
 const productsData = require("../data/products.json");
+const logger_1 = require("../utils/logger");
 const insertProductsData = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield product_model_1.ProductModel.insertMany(productsData);
     }
     catch (error) {
-        console.error("Error inserting product data:", error);
+        logger_1.logger.error("Error inserting product data:", error);
     }
 });
 (0, db_1.default)().then(() => insertProductsData());

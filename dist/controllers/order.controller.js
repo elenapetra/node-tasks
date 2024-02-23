@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createUserOrders = void 0;
 const order_service_1 = require("../services/order.service");
 const mongoose_1 = require("mongoose");
+const logger_1 = require("../utils/logger");
 const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
@@ -24,7 +25,7 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         const userCart = yield (0, order_service_1.createOrder)(userId);
         if (!userCart) {
-            console.error("User cart was not found");
+            logger_1.logger.error("User cart was not found");
             res.status(400).json({ data: null, error: { message: "Cart is empty" } });
             return;
         }
@@ -51,7 +52,7 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(200).json(responseBody);
     }
     catch (error) {
-        console.error("Error creating user orders:", error);
+        logger_1.logger.error("Error creating user orders:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

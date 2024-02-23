@@ -1,5 +1,6 @@
 import { CartEntity } from "../utils/types";
 import { CartModel } from "../models/schemas/cart.model";
+import { logger } from "../utils/logger";
 
 export const getCartObject = async (
   userId: string
@@ -29,7 +30,7 @@ export const getCartObject = async (
 
     return userCart.toObject();
   } catch (error) {
-    console.error("Error getting cart data:", error);
+    logger.error("Error getting cart data:", error);
     return undefined;
   }
 };
@@ -45,11 +46,11 @@ export const updateCartObject = async (
       { new: true }
     );
     if (!cartToUpdate) {
-      console.error("User's cart not found or is deleted.");
+      logger.error("User's cart not found or is deleted.");
       return;
     }
   } catch (error) {
-    console.error("Error updating cart data: ", error);
+    logger.error("Error updating cart data: ", error);
   }
 };
 
@@ -68,11 +69,11 @@ export const deleteCartObject = async (userId: string): Promise<void> => {
       { new: true }
     );
     if (!deletedCart) {
-      console.error("User's cart not found or is already deleted.");
+      logger.error("User's cart not found or is already deleted.");
       return;
     }
   } catch (error) {
-    console.error("Error deleting cart data:", error);
+    logger.error("Error deleting cart data:", error);
   }
 };
 
@@ -85,12 +86,12 @@ export const getActiveCartObject = async (
       isDeleted: false,
     });
     if (!userCart) {
-      console.error("User's cart not found");
+      logger.error("User's cart not found");
       return undefined;
     }
     return userCart.toObject();
   } catch (error) {
-    console.error("Error checking out cart data:", error);
+    logger.error("Error checking out cart data:", error);
     return undefined;
   }
 };

@@ -3,6 +3,7 @@ import { getUserObject } from "../repositories/user.repository";
 import { CustomRequest } from "../utils/types";
 const jwt = require("jsonwebtoken");
 import { JsonWebTokenError } from "jsonwebtoken";
+import { logger } from "../utils/logger";
 
 export const authenticateMiddleware = async (
   req: CustomRequest,
@@ -47,7 +48,7 @@ export const authenticateMiddleware = async (
           error: { message: "User is not authorized" },
         });
       } else {
-        console.error("Error in authenticateMiddleware:", error);
+        logger.error("Error in authenticateMiddleware:", error);
         res.status(500).json({
           data: null,
           error: { message: "Internal Server Error" },
@@ -55,7 +56,7 @@ export const authenticateMiddleware = async (
       }
     }
   } catch (error) {
-    console.error("Error in authenticateMiddleware:", error);
+    logger.error("Error in authenticateMiddleware:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal Server Error" },
@@ -80,7 +81,7 @@ export const authorizeMiddleware = async (
     }
     next();
   } catch (error) {
-    console.error("Error in authorizeMiddleware:", error);
+    logger.error("Error in authorizeMiddleware:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal Server Error" },

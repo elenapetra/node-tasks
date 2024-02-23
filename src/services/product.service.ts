@@ -4,13 +4,14 @@ import {
   getProductObject,
 } from "../repositories/product.repository";
 import { Types } from "mongoose";
+import { logger } from "../utils/logger";
 
 export const getProductsList = async (): Promise<ProductEntity[]> => {
   try {
     const products = await getAllProductsObjects();
     return products;
   } catch (error) {
-    console.error("Error getting products:", error);
+    logger.error("Error getting products:", error);
     return [];
   }
 };
@@ -22,7 +23,7 @@ export const getProductById = async (
     const product = await getProductObject(productId.toString());
     return product;
   } catch (error) {
-    console.error("Error getting product:", error);
+    logger.error("Error getting product:", error);
     return;
   }
 };

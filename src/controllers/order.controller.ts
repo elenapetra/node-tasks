@@ -3,6 +3,7 @@ import { createOrder, saveOrder } from "../services/order.service";
 import { CustomRequest } from "../utils/types";
 import { ORDER_STATUS } from "../utils/types";
 import { Types } from "mongoose";
+import { logger } from "../utils/logger";
 
 export const createUserOrders = async (
   req: CustomRequest,
@@ -19,7 +20,7 @@ export const createUserOrders = async (
     }
     const userCart = await createOrder(userId);
     if (!userCart) {
-      console.error("User cart was not found");
+      logger.error("User cart was not found");
       res.status(400).json({ data: null, error: { message: "Cart is empty" } });
       return;
     }
@@ -48,7 +49,7 @@ export const createUserOrders = async (
     };
     res.status(200).json(responseBody);
   } catch (error) {
-    console.error("Error creating user orders:", error);
+    logger.error("Error creating user orders:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

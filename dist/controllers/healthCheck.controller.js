@@ -12,16 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const logger_1 = require("./utils/logger");
-const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.healthCheck = void 0;
+const db_1 = __importDefault(require("../db"));
+const logger_1 = require("../utils/logger");
+const healthCheck = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/shopDB";
-        yield mongoose_1.default.connect(URI);
-        logger_1.logger.info("Connected to MongoDB");
+        const serverStatus = "OK";
+        yield (0, db_1.default)();
+        res.status(200).json({
+            status: serverStatus,
+            message: "Application is healthy",
+        });
     }
     catch (error) {
-        logger_1.logger.error("Error connecting to MongoDB:", error.message);
+        logger_1.logger.error("Health check failed:", error);
+        res.status(500).json({
+            status: "Error",
+            message: "Internal Server Error",
+        });
     }
 });
-exports.default = connectDB;
+exports.healthCheck = healthCheck;

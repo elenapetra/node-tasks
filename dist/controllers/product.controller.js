@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProduct = exports.getProducts = void 0;
 const product_service_1 = require("../services/product.service");
+const logger_1 = require("../utils/logger");
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield (0, product_service_1.getProductsList)();
@@ -18,10 +19,16 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             data: Object.values(products),
             error: null,
         };
-        res.json(responseBody);
+        res.status(200).json(responseBody);
     }
     catch (error) {
-        console.error("Error getting products: ", error);
+        logger_1.logger.error("Error getting products: ", error);
+        res.status(500).json({
+            data: null,
+            error: {
+                message: "Internal Server error",
+            },
+        });
     }
 });
 exports.getProducts = getProducts;
@@ -39,10 +46,16 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             data: Object.assign({}, product),
             error: null,
         };
-        res.json(responseBody);
+        res.status(200).json(responseBody);
     }
     catch (error) {
-        console.error("Error getting product: ", error);
+        logger_1.logger.error("Error getting product: ", error);
+        res.status(500).json({
+            data: null,
+            error: {
+                message: "Internal Server error",
+            },
+        });
     }
 });
 exports.getProduct = getProduct;

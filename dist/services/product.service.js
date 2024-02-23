@@ -11,13 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductById = exports.getProductsList = void 0;
 const product_repository_1 = require("../repositories/product.repository");
+const logger_1 = require("../utils/logger");
 const getProductsList = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const products = yield (0, product_repository_1.getAllProductsObjects)();
         return products;
     }
     catch (error) {
-        console.error("Error getting products:", error);
+        logger_1.logger.error("Error getting products:", error);
         return [];
     }
 });
@@ -28,7 +29,7 @@ const getProductById = (productId) => __awaiter(void 0, void 0, void 0, function
         return product;
     }
     catch (error) {
-        console.error("Error getting product:", error);
+        logger_1.logger.error("Error getting product:", error);
         return;
     }
 });

@@ -1,5 +1,6 @@
 import { UserEntity } from "../utils/types";
 import { UserModel } from "../models/schemas/user.model";
+import { logger } from "../utils/logger";
 
 export const getUserObject = async (
   userId: string
@@ -10,7 +11,7 @@ export const getUserObject = async (
       return user.toObject();
     }
   } catch (error) {
-    console.error("Error getting user data:", error);
+    logger.error("Error getting user data:", error);
   }
 };
 
@@ -22,7 +23,7 @@ export const saveUserToDB = async (
     const saveUser = await newUser.save();
     return saveUser.toObject();
   } catch (error) {
-    console.error("Error saving user to the database:", error);
+    logger.error("Error saving user to the database:", error);
     return undefined;
   }
 };
@@ -32,7 +33,7 @@ export const findUserByEmail = async (email: string) => {
     const user = await UserModel.findOne({ email }).exec();
     return user ? user.toObject() : null;
   } catch (error) {
-    console.error("Error finding user by email:", error);
+    logger.error("Error finding user by email:", error);
     return null;
   }
 };

@@ -6,6 +6,7 @@ import {
 } from "../repositories/cart.repository";
 import { CartItemEntity } from "../utils/types";
 import { getProductById } from "./product.service";
+import { logger } from "../utils/logger";
 
 export const getCart = async (
   userId: string
@@ -14,7 +15,7 @@ export const getCart = async (
     const userCart = await getCartObject(userId);
     return userCart;
   } catch (error) {
-    console.error("Cart not found for user:", userId);
+    logger.error("Cart not found for user:", userId);
   }
 };
 
@@ -26,7 +27,7 @@ export const updateCart = async (
     const existingCart = await getCartObject(userId);
 
     if (!existingCart) {
-      console.error("Cart not found for user:", userId);
+      logger.error("Cart not found for user:", userId);
       return;
     }
 
@@ -42,7 +43,7 @@ export const updateCart = async (
       const productDetails = await getProductById(product._id);
 
       if (!productDetails) {
-        console.error(
+        logger.error(
           "Product not found in the database for updateItem:",
           itemToUpdate
         );
@@ -57,7 +58,7 @@ export const updateCart = async (
 
     await updateCartObject(userId, { items: existingCart.items });
   } catch (error) {
-    console.error("Error updating cart:", error);
+    logger.error("Error updating cart:", error);
   }
 };
 
@@ -66,6 +67,6 @@ export const deleteCart = async (userId: string): Promise<void> => {
     const deletedCart = await deleteCartObject(userId);
     return deletedCart;
   } catch (error) {
-    console.error("Error deleting cart:", error);
+    logger.error("Error deleting cart:", error);
   }
 };

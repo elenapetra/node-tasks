@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductObject = exports.getAllProductsObjects = void 0;
 const product_model_1 = require("../models/schemas/product.model");
+const logger_1 = require("../utils/logger");
 const getAllProductsObjects = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield product_model_1.ProductModel.find().exec();
     }
     catch (error) {
-        console.error("Error fetching products from MongoDB:", error);
+        logger_1.logger.error("Error fetching products from MongoDB:", error);
         return [];
     }
 });
@@ -27,7 +28,7 @@ const getProductObject = (productId) => __awaiter(void 0, void 0, void 0, functi
         return product ? product.toJSON() : undefined;
     }
     catch (error) {
-        console.error("Error fetching product by ID from MongoDB:", error);
+        logger_1.logger.error("Error fetching product by ID from MongoDB:", error);
         return undefined;
     }
 });

@@ -13,6 +13,7 @@ exports.authorizeMiddleware = exports.authenticateMiddleware = void 0;
 const user_repository_1 = require("../repositories/user.repository");
 const jwt = require("jsonwebtoken");
 const jsonwebtoken_1 = require("jsonwebtoken");
+const logger_1 = require("../utils/logger");
 const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authHeader = req.headers["authorization"];
@@ -48,7 +49,7 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
                 });
             }
             else {
-                console.error("Error in authenticateMiddleware:", error);
+                logger_1.logger.error("Error in authenticateMiddleware:", error);
                 res.status(500).json({
                     data: null,
                     error: { message: "Internal Server Error" },
@@ -57,7 +58,7 @@ const authenticateMiddleware = (req, res, next) => __awaiter(void 0, void 0, voi
         }
     }
     catch (error) {
-        console.error("Error in authenticateMiddleware:", error);
+        logger_1.logger.error("Error in authenticateMiddleware:", error);
         res.status(500).json({
             data: null,
             error: { message: "Internal Server Error" },
@@ -78,7 +79,7 @@ const authorizeMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0
         next();
     }
     catch (error) {
-        console.error("Error in authorizeMiddleware:", error);
+        logger_1.logger.error("Error in authorizeMiddleware:", error);
         res.status(500).json({
             data: null,
             error: { message: "Internal Server Error" },

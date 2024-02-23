@@ -12,13 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCart = exports.updateCart = exports.getCart = void 0;
 const cart_repository_1 = require("../repositories/cart.repository");
 const product_service_1 = require("./product.service");
+const logger_1 = require("../utils/logger");
 const getCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userCart = yield (0, cart_repository_1.getCartObject)(userId);
         return userCart;
     }
     catch (error) {
-        console.error("Cart not found for user:", userId);
+        logger_1.logger.error("Cart not found for user:", userId);
     }
 });
 exports.getCart = getCart;
@@ -26,7 +27,7 @@ const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, f
     try {
         const existingCart = yield (0, cart_repository_1.getCartObject)(userId);
         if (!existingCart) {
-            console.error("Cart not found for user:", userId);
+            logger_1.logger.error("Cart not found for user:", userId);
             return;
         }
         const { product, count } = itemToUpdate;
@@ -37,7 +38,7 @@ const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, f
         else {
             const productDetails = yield (0, product_service_1.getProductById)(product._id);
             if (!productDetails) {
-                console.error("Product not found in the database for updateItem:", itemToUpdate);
+                logger_1.logger.error("Product not found in the database for updateItem:", itemToUpdate);
                 return;
             }
             existingCart.items.push({
@@ -48,7 +49,7 @@ const updateCart = (userId, itemToUpdate) => __awaiter(void 0, void 0, void 0, f
         yield (0, cart_repository_1.updateCartObject)(userId, { items: existingCart.items });
     }
     catch (error) {
-        console.error("Error updating cart:", error);
+        logger_1.logger.error("Error updating cart:", error);
     }
 });
 exports.updateCart = updateCart;
@@ -58,7 +59,7 @@ const deleteCart = (userId) => __awaiter(void 0, void 0, void 0, function* () {
         return deletedCart;
     }
     catch (error) {
-        console.error("Error deleting cart:", error);
+        logger_1.logger.error("Error deleting cart:", error);
     }
 });
 exports.deleteCart = deleteCart;

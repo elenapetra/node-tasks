@@ -12,13 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveOrder = exports.createOrder = void 0;
 const order_repository_1 = require("../repositories/order.repository");
 const cart_repository_1 = require("../repositories/cart.repository");
+const logger_1 = require("../utils/logger");
 const createOrder = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userCart = yield (0, cart_repository_1.getActiveCartObject)(userId);
         return userCart;
     }
     catch (error) {
-        console.error("Error creating order:", error);
+        logger_1.logger.error("Error creating order:", error);
     }
 });
 exports.createOrder = createOrder;
@@ -27,7 +28,7 @@ const saveOrder = (order) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, order_repository_1.saveOrderObject)(order);
     }
     catch (error) {
-        console.error("Error saving order:", error);
+        logger_1.logger.error("Error saving order:", error);
     }
 });
 exports.saveOrder = saveOrder;

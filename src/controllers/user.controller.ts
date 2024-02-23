@@ -2,6 +2,7 @@ import { CustomRequest } from "../utils/types";
 import { Response } from "express";
 import { saveUserToDB, findUserByEmail } from "../repositories/user.repository";
 import { registrationSchema, loginSchema } from "../utils/bodyValidation";
+import { logger } from "../utils/logger";
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -13,6 +14,9 @@ export const registerUser = async (
     const { error, value } = registrationSchema.validate(req.body);
 
     if (error) {
+      logger.error(
+        `Registration validation error: ${error.details[0].message}`
+      );
       res.status(400).json({
         data: null,
         error: { message: error.details[0].message },
@@ -55,9 +59,10 @@ export const registerUser = async (
       error: null,
     };
 
+    logger.info("User registration successful");
     res.status(201).json(responseData);
   } catch (error) {
-    console.error("Error in registerUser:", error);
+    logger.error("Error in registerUser:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal server error" },
@@ -101,7 +106,7 @@ export const loginUser = async (
       error: null,
     });
   } catch (error) {
-    console.error("Error in loginUser:", error);
+    logger.error("Error in loginUser:", error);
     res.status(500).json({
       data: null,
       error: { message: "Internal server error" },

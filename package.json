@@ -5,7 +5,9 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "nodemon src/app.ts",
+    "start": "set NODE_ENV=production && node ./dist/app.js",
+    "start-dev": "set NODE_ENV=development&& nodemon src/app.ts",
+    "start-test": "set NODE_ENV=test&& nodemon src/app.ts",
     "prestart": "npm run build",
     "predev": "npm run build"
   },
@@ -21,8 +23,10 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "6.3",
     "mongoose": "^8.1.1",
+    "morgan": "^1.10.0",
     "save": "^2.9.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -30,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.11.19",
+    "@types/response-time": "^2.3.8",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

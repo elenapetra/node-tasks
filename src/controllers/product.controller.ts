@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getProductsList, getProductById } from "../services/product.service";
+import { logger } from "../utils/logger";
 
 export const getProducts = async (
   req: Request,
@@ -11,9 +12,15 @@ export const getProducts = async (
       data: Object.values(products),
       error: null,
     };
-    res.json(responseBody);
+    res.status(200).json(responseBody);
   } catch (error) {
-    console.error("Error getting products: ", error);
+    logger.error("Error getting products: ", error);
+    res.status(500).json({
+      data: null,
+      error: {
+        message: "Internal Server error",
+      },
+    });
   }
 };
 
@@ -34,8 +41,14 @@ export const getProduct = async (
       data: { ...product },
       error: null,
     };
-    res.json(responseBody);
+    res.status(200).json(responseBody);
   } catch (error) {
-    console.error("Error getting product: ", error);
+    logger.error("Error getting product: ", error);
+    res.status(500).json({
+      data: null,
+      error: {
+        message: "Internal Server error",
+      },
+    });
   }
 };

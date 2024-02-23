@@ -12,12 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = exports.registerUser = void 0;
 const user_repository_1 = require("../repositories/user.repository");
 const bodyValidation_1 = require("../utils/bodyValidation");
+const logger_1 = require("../utils/logger");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { error, value } = bodyValidation_1.registrationSchema.validate(req.body);
         if (error) {
+            logger_1.logger.error(`Registration validation error: ${error.details[0].message}`);
             res.status(400).json({
                 data: null,
                 error: { message: error.details[0].message },
@@ -54,10 +56,11 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             },
             error: null,
         };
+        logger_1.logger.info("User registration successful");
         res.status(201).json(responseData);
     }
     catch (error) {
-        console.error("Error in registerUser:", error);
+        logger_1.logger.error("Error in registerUser:", error);
         res.status(500).json({
             data: null,
             error: { message: "Internal server error" },
@@ -91,7 +94,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.error("Error in loginUser:", error);
+        logger_1.logger.error("Error in loginUser:", error);
         res.status(500).json({
             data: null,
             error: { message: "Internal server error" },

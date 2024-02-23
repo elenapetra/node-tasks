@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findUserByEmail = exports.saveUserToDB = exports.getUserObject = void 0;
 const user_model_1 = require("../models/schemas/user.model");
+const logger_1 = require("../utils/logger");
 const getUserObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield user_model_1.UserModel.findOne({ _id: userId });
@@ -19,7 +20,7 @@ const getUserObject = (userId) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
-        console.error("Error getting user data:", error);
+        logger_1.logger.error("Error getting user data:", error);
     }
 });
 exports.getUserObject = getUserObject;
@@ -30,7 +31,7 @@ const saveUserToDB = (user) => __awaiter(void 0, void 0, void 0, function* () {
         return saveUser.toObject();
     }
     catch (error) {
-        console.error("Error saving user to the database:", error);
+        logger_1.logger.error("Error saving user to the database:", error);
         return undefined;
     }
 });
@@ -41,7 +42,7 @@ const findUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* (
         return user ? user.toObject() : null;
     }
     catch (error) {
-        console.error("Error finding user by email:", error);
+        logger_1.logger.error("Error finding user by email:", error);
         return null;
     }
 });

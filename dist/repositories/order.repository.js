@@ -11,13 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveOrderObject = exports.getOrderObject = void 0;
 const order_model_1 = require("../models/schemas/order.model");
+const logger_1 = require("../utils/logger");
 const getOrderObject = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const order = yield order_model_1.OrderModel.find({ userId });
         return order;
     }
     catch (error) {
-        console.error("Error fetching user orders from MongoDB:", error);
+        logger_1.logger.error("Error fetching user orders from MongoDB:", error);
         return [];
     }
 });
@@ -27,7 +28,7 @@ const saveOrderObject = (order) => __awaiter(void 0, void 0, void 0, function* (
         yield order_model_1.OrderModel.create(order);
     }
     catch (error) {
-        console.error("Error saving order to MongoDB:", error);
+        logger_1.logger.error("Error saving order to MongoDB:", error);
     }
 });
 exports.saveOrderObject = saveOrderObject;

@@ -13,7 +13,7 @@ exports.updateUserCart = exports.deleteUserCart = exports.getUserCart = void 0;
 const cart_service_1 = require("../services/cart.service");
 const product_repository_1 = require("../repositories/product.repository");
 const bodyValidation_1 = require("../utils/bodyValidation");
-const mongoose = require("mongoose");
+const logger_1 = require("../utils/logger");
 const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     try {
@@ -62,7 +62,7 @@ const deleteUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json({ data: { success: true }, error: null });
     }
     catch (error) {
-        console.error("Error deleting cart:", error);
+        logger_1.logger.error("Error deleting cart:", error);
     }
 });
 exports.deleteUserCart = deleteUserCart;
@@ -158,7 +158,7 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(responseBody);
     }
     catch (error) {
-        console.error("Error updating cart:", error);
+        logger_1.logger.error("Error updating cart:", error);
         res.status(500).json({
             data: null,
             error: { message: "Internal Server Error" },
