@@ -128,15 +128,37 @@ export const updateUserCart = async (
 
     await updateCart(userId, itemToUpdate);
 
-    const currentProduct = userCart.items.find((item) => {
-      return item.product._id.equals(productId);
+    const updatedUserCart = await getCart(userId);
+
+    if (!updatedUserCart) {
+      res.status(500).json({
+        data: null,
+        error: {
+          message: "Failed to update user cart",
+        },
+      });
+      return;
+    }
+
+    const currentProduct = updatedUserCart.items.find((item) => {
+      return item.product._id.toString() === productId;
     });
 
     if (currentProduct) {
       const data = {
         cart: {
           id: userCart._id,
-          items: [currentProduct],
+          items: [
+            {
+              product: {
+                id: currentProduct.product._id.toString(),
+                title: currentProduct.product.title,
+                description: currentProduct.product.description,
+                price: currentProduct.product.price,
+              },
+              count: count,
+            },
+          ],
         },
         total: count * currentProduct.product.price,
       };

@@ -25,6 +25,7 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const userCart = yield (0, order_service_1.createOrder)(userId);
         if (!userCart) {
             console.error("User cart was not found");
+            res.status(400).json({ data: null, error: { message: "Cart is empty" } });
             return;
         }
         if (userCart.items.length === 0) {
