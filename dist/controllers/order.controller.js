@@ -13,6 +13,7 @@ exports.createUserOrders = void 0;
 const order_service_1 = require("../services/order.service");
 const mongoose_1 = require("mongoose");
 const logger_1 = require("../utils/logger");
+const cart_service_1 = require("../services/cart.service");
 const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
@@ -45,6 +46,7 @@ const createUserOrders = (req, res) => __awaiter(void 0, void 0, void 0, functio
             total: userCart.items.reduce((acc, item) => acc + item.product.price * item.count, 0),
         };
         yield (0, order_service_1.saveOrder)(userOrder);
+        yield (0, cart_service_1.deleteCart)(userId);
         const responseBody = {
             data: { userOrder },
             error: null,
