@@ -4,12 +4,13 @@ services:
   app:
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     depends_on:
       - mongo
     environment:
-      MONGO_URI: "mongodb://mongo:27018/shopDB"
+      DOCKERIZED: "true"
 
   mongo:
     image: mongo:latest
