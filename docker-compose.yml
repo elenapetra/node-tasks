@@ -9,9 +9,9 @@ services:
     depends_on:
       - mongo
     environment:
-      MONGO_URI: "mongodb://mongo:27017/shopDB"
+      MONGO_URI: "mongodb://mongo:27018/shopDB"
 
   mongo:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "27018:27017"
