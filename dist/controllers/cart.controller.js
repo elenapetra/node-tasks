@@ -73,7 +73,7 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const userId = req.userId;
         const orderSchema = joi_1.default.object({
             productId: joi_1.default.string().required(),
-            count: joi_1.default.number().integer().min(0).required(),
+            count: joi_1.default.number().integer().min(1).required(),
         });
         const { error, value } = orderSchema.validate(req.body);
         if (error) {
