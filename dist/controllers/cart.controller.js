@@ -13,7 +13,6 @@ exports.updateUserCart = exports.deleteUserCart = exports.getUserCart = void 0;
 const cart_service_1 = require("../services/cart.service");
 const product_repository_1 = require("../repositories/product.repository");
 const bodyValidation_1 = require("../utils/bodyValidation");
-const mongoose = require("mongoose");
 const getUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     try {
@@ -137,19 +136,17 @@ const updateUserCart = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const data = {
             cart: {
                 id: userCart._id,
-                items: [
-                    {
-                        product: {
-                            id: currentProduct.product._id.toString(),
-                            title: currentProduct.product.title,
-                            description: currentProduct.product.description,
-                            price: currentProduct.product.price,
-                        },
-                        count: count,
+                items: updatedUserCart.items.map((item) => ({
+                    product: {
+                        id: item.product._id.toString(),
+                        title: item.product.title,
+                        description: item.product.description,
+                        price: item.product.price,
                     },
-                ],
+                    count: item.count,
+                })),
             },
-            total: count * currentProduct.product.price,
+            total: updatedUserCart.items.reduce((acc, item) => acc + item.product.price * item.count, 0),
         };
         const responseBody = {
             data,

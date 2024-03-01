@@ -37,7 +37,7 @@ export const updateCart = async (
     );
 
     if (existingItem) {
-      existingItem.count += count;
+      existingItem.count = count;
     } else {
       const productDetails = await getProductById(product._id);
 
