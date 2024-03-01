@@ -153,19 +153,20 @@ export const updateUserCart = async (
     const data = {
       cart: {
         id: userCart._id,
-        items: [
-          {
-            product: {
-              id: currentProduct.product._id.toString(),
-              title: currentProduct.product.title,
-              description: currentProduct.product.description,
-              price: currentProduct.product.price,
-            },
-            count: count,
+        items: updatedUserCart.items.map((item) => ({
+          product: {
+            id: item.product._id.toString(),
+            title: item.product.title,
+            description: item.product.description,
+            price: item.product.price,
           },
-        ],
+          count: item.count,
+        })),
       },
-      total: count * currentProduct.product.price,
+      total: updatedUserCart.items.reduce(
+        (acc, item) => acc + item.product.price * item.count,
+        0
+      ),
     };
 
     const responseBody = {
