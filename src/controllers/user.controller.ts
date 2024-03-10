@@ -83,10 +83,18 @@ export const loginUser = async (
     const { email, password } = value;
     const user = await findUserByEmail(email);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    if (!user) {
       res.status(401).json({
         data: null,
-        error: { message: "No user with such email or password" },
+        error: { message: "No user found with this email" },
+      });
+      return;
+    }
+
+    if (!(await bcrypt.compare(password, user.password))) {
+      res.status(401).json({
+        data: null,
+        error: { message: "Credentials are invalid" },
       });
       return;
     }
