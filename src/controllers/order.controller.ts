@@ -45,6 +45,7 @@ export const createUserOrders = async (
     };
     await saveOrder(userOrder);
     await deleteCart(userId);
+    await deleteCart(userId);
     const responseBody = {
       data: { userOrder },
       error: null,

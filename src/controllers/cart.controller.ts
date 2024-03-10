@@ -136,20 +136,6 @@ export const updateUserCart = async (
       return;
     }
 
-    const currentProduct = updatedUserCart.items.find((item) => {
-      return item.product._id.toString() === productId;
-    });
-
-    if (!currentProduct) {
-      res.status(404).json({
-        data: null,
-        error: {
-          message: "Product not found in the updated cart",
-        },
-      });
-      return;
-    }
-
     const data = {
       cart: {
         id: userCart._id,
