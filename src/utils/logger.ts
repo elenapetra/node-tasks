@@ -1,6 +1,6 @@
 import winston from "winston";
 
-export const configureLogger = () => {
+const configureLogger = () => {
   const logger = winston.createLogger({
     level:
       process.env.NODE_ENV === "test" || process.env.NODE_ENV === "development"

@@ -13,10 +13,6 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 const BASE_URL = process.env.BASE_URL || "http://localhost";
 
-const server: Server = app.listen(PORT, () => {
-  logger.info(`Server running at ${BASE_URL}:${PORT}`);
-});
-
 connectDB().then(() => {
   app.use(bodyParser.json());
 
@@ -25,6 +21,10 @@ connectDB().then(() => {
   app.use("/api/auth", authRouter);
 
   app.get("/health", healthCheck);
+});
+
+const server: Server = app.listen(PORT, () => {
+  logger.info(`Server running at ${BASE_URL}:${PORT}`);
 });
 
 app.use(morganMiddleware);

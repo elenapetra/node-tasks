@@ -1,14 +1,16 @@
 import connectDB from "../db";
 import { Response, Request } from "express";
 import { logger } from "../utils/logger";
+import mongoose from "mongoose";
 
 export const healthCheck = async (req: Request, res: Response) => {
   try {
-    const serverStatus = "OK";
-    await connectDB();
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
 
     res.status(200).json({
-      status: serverStatus,
+      status: "OK",
       message: "Application is healthy",
     });
   } catch (error) {
